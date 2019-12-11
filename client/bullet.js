@@ -21,14 +21,13 @@ class Bullet extends Rect {
 
         if (this.left < 0 || this.right > canvas.width
             || this.top < 0 || this.bottom > canvas.height) {
-                // todo use a Set instead of Array for the bullets to be able to do a .delete
-            bullets.splice(bullets.indexOf(this), 1);
+            bullets.delete(this);
         } else {
             players.forEach(player => {
                 if (player !== this.player &&
                     player.left < this.right && player.right > this.left &&
                     player.top < this.bottom && player.bottom > this.top) {
-                    bullets.splice(bullets.indexOf(this), 1);
+                    bullets.delete(this);
                     this.player.score++;
                 }
             });

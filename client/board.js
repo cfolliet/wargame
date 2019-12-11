@@ -4,7 +4,7 @@ class Board {
         this._context = canvas.getContext('2d');
 
         this.players = [];
-        this.bullets = [];
+        this.bullets = new Set;
 
         let lastTime = null;
         this._frameCallback = (millis) => {
@@ -26,7 +26,7 @@ class Board {
     }
     createBullet(player, vel) {
         const bullet = new Bullet(player, vel);
-        this.bullets.push(bullet);
+        this.bullets.add(bullet);
     }
     movePlayer(player, axis, direction){        
         player.vel[axis] = direction;
