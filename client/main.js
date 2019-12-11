@@ -10,10 +10,11 @@ document.addEventListener('click', event => {
     const x = event.clientX - rect.left - currentPlayer.pos.x;
     const y = event.clientY - rect.top - currentPlayer.pos.y;
     const vel = new Vec(x, y);
-    board.createBullet(currentPlayer, vel);
+    const bullet = board.createBullet(currentPlayer, vel);
+    send({ type: 'create-bullet', value: bullet });
 });
 
-document.addEventListener("keydown", event => {    
+document.addEventListener("keydown", event => {
     if (event.keyCode == 37) {
         board.movePlayer(currentPlayer, 'x', -1);
     } else if (event.keyCode == 38) {
@@ -38,4 +39,17 @@ document.addEventListener("keyup", event => {
 });
 
 const address = 'ws://localhost:9000';
-var wsc = new WebSocket(address);
+var conn = new WebSocket(address);
+conn.addEventListener('message', event => {
+    receive(event.data);
+});
+
+function receive(message) {
+    const data = JSON.parse(message);
+    console.log('Received message', data);
+}
+
+function send(data) {
+    const msg = JSON.stringify(data);
+    this.conn.send(msg);
+}

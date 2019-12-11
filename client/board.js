@@ -27,6 +27,7 @@ class Board {
     createBullet(player, vel) {
         const bullet = new Bullet(player, vel);
         this.bullets.add(bullet);
+        return bullet;
     }
     movePlayer(player, axis, direction){        
         player.vel[axis] = direction;
