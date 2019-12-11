@@ -13,26 +13,26 @@ document.addEventListener('click', event => {
     board.createBullet(currentPlayer, vel);
 });
 
-document.addEventListener("keydown", event => {
+document.addEventListener("keydown", event => {    
     if (event.keyCode == 37) {
-        currentPlayer.vel.x = -1;
+        board.movePlayer(currentPlayer, 'x', -1);
     } else if (event.keyCode == 38) {
-        currentPlayer.vel.y = -1;
+        board.movePlayer(currentPlayer, 'y', -1);
     } else if (event.keyCode == 39) {
-        currentPlayer.vel.x = 1;
+        board.movePlayer(currentPlayer, 'x', 1);
     } else if (event.keyCode == 40) {
-        currentPlayer.vel.y = 1;
+        board.movePlayer(currentPlayer, 'y', 1);
     }
 });
 
 document.addEventListener("keyup", event => {
     if (event.keyCode == 37) {
-        currentPlayer.vel.x = 0;
+        board.movePlayer(currentPlayer, 'x', 0);
     } else if (event.keyCode == 38) {
-        currentPlayer.vel.y = 0;
+        board.movePlayer(currentPlayer, 'y', 0);
     } else if (event.keyCode == 39) {
-        currentPlayer.vel.x = 0;
+        board.movePlayer(currentPlayer, 'x', 0);
     } else if (event.keyCode == 40) {
-        currentPlayer.vel.y = 0;
+        board.movePlayer(currentPlayer, 'y', 0);
     }
 });

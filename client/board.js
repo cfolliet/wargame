@@ -28,6 +28,9 @@ class Board {
         const bullet = new Bullet(player, vel);
         this.bullets.push(bullet);
     }
+    movePlayer(player, axis, direction){        
+        player.vel[axis] = direction;
+    }
     clear() {
         this._context.fillStyle = '#000';
         this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
