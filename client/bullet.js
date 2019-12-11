@@ -1,8 +1,10 @@
 class Bullet extends Rect {
-    constructor(player) {
+    constructor(player, vel) {
         super(2, 2);
-        this.vel = new Vec;
+        this.vel = vel;
         this.player = player;
+        this.pos.x = player.pos.x;
+        this.pos.y = player.pos.y;
     }
     update(dt) {
         const vel = new Vec(this.vel.x, this.vel.y);

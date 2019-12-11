@@ -17,12 +17,16 @@ class Board {
         };
         requestAnimationFrame(this._frameCallback);
     }
-    createPlayer(name){
+    createPlayer(name) {
         const player = new Player(name);
         player.pos.x = this._canvas.width * Math.random();
-        player.pos.y = this._canvas.height / 2  * Math.random();
+        player.pos.y = this._canvas.height / 2 * Math.random();
         this.players.push(player);
         return player;
+    }
+    createBullet(player, vel) {
+        const bullet = new Bullet(player, vel);
+        this.bullets.push(bullet);
     }
     clear() {
         this._context.fillStyle = '#000';
@@ -32,9 +36,9 @@ class Board {
         this._context.fillStyle = '#fff';
         this._context.fillRect(rect.left, rect.top, rect.size.x, rect.size.y);
     }
-    drawScore(players){
-        players.slice().sort((a, b) => b.score - a.score ).forEach((player, index) => {
-            this._context.fillText(player.name + ': '  + player.score, this._canvas.width - 100, 20 + index * 20, 100);
+    drawScore(players) {
+        players.slice().sort((a, b) => b.score - a.score).forEach((player, index) => {
+            this._context.fillText(player.name + ': ' + player.score, this._canvas.width - 100, 20 + index * 20, 100);
         });
     }
     draw() {

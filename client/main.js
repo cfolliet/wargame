@@ -7,12 +7,10 @@ board.createPlayer('player 2');
 
 document.addEventListener('click', event => {
     const rect = canvas.getBoundingClientRect();
-    const bullet = new Bullet(currentPlayer);
-    bullet.pos.x = currentPlayer.pos.x;
-    bullet.pos.y = currentPlayer.pos.y;
-    bullet.vel.x = event.clientX - rect.left - currentPlayer.pos.x;
-    bullet.vel.y = event.clientY - rect.top - currentPlayer.pos.y;
-    board.bullets.push(bullet);
+    const x = event.clientX - rect.left - currentPlayer.pos.x;
+    const y = event.clientY - rect.top - currentPlayer.pos.y;
+    const vel = new Vec(x, y);
+    board.createBullet(currentPlayer, vel);
 });
 
 document.addEventListener("keydown", event => {
