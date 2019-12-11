@@ -2,7 +2,8 @@
 
 const canvas = document.getElementById('canvas');
 const board = new Board(canvas);
-const currentPlayer = board.players[0];
+const currentPlayer = board.createPlayer('player 1');
+board.createPlayer('player 2');
 
 document.addEventListener('click', event => {
     const rect = canvas.getBoundingClientRect();

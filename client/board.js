@@ -3,16 +3,8 @@ class Board {
         this._canvas = canvas;
         this._context = canvas.getContext('2d');
 
-        this.players = [
-            new Player('player 1'),
-            new Player('player 2'),
-        ];
-
+        this.players = [];
         this.bullets = [];
-
-        this.players[0].pos.x = 50;
-        this.players[1].pos.x = this._canvas.width - 50;
-        this.players.forEach(p => p.pos.y = this._canvas.height / 2);
 
         let lastTime = null;
         this._frameCallback = (millis) => {
@@ -24,6 +16,13 @@ class Board {
             requestAnimationFrame(this._frameCallback);
         };
         requestAnimationFrame(this._frameCallback);
+    }
+    createPlayer(name){
+        const player = new Player(name);
+        player.pos.x = this._canvas.width * Math.random();
+        player.pos.y = this._canvas.height / 2  * Math.random();
+        this.players.push(player);
+        return player;
     }
     clear() {
         this._context.fillStyle = '#000';
