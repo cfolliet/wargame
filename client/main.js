@@ -36,3 +36,6 @@ document.addEventListener("keyup", event => {
         board.movePlayer(currentPlayer, 'y', 0);
     }
 });
+
+const address = 'ws://localhost:9000';
+var wsc = new WebSocket(address);
