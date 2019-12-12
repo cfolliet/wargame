@@ -39,6 +39,8 @@ class Board {
         this.bullets.add(bullet);
     }
     load(data) {
+        this._canvas.width = data.width;
+        this._canvas.height = data.height;
         this.players.clear();
         data.players.forEach(p => this.loadPlayer(p));
         this.bullets.clear();
