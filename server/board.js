@@ -46,8 +46,8 @@ class Board {
         const bullet = new Bullet(player, vel);
         this.bullets.add(bullet);
     }
-    movePlayer(player, axis, direction) {
-        player.vel[axis] = direction;
+    movePlayer(playerId, axis, direction) {
+        this.players.get(playerId).vel[axis] = direction;
     }
     update(dt) {
         this.players.forEach(player => {

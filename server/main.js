@@ -43,9 +43,14 @@ class Client {
     }
     receive(message) {
         const data = JSON.parse(message);
+        console.log('received', data)
         if (data.type == 'create-bullet') {
-            this.board.createBullet(data.value.player, data.value.vel);
+            this.board.createBullet(data.value.playerId, data.value.vel);
             this.broadcast(data);
+        } else if(data.type == 'move-player'){
+            this.board.movePlayer(this.playerId , data.value.axis, data.value.direction);
+            this.send({ type: 'update-board', value: board.serialize() });
+            this.broadcast({ type: 'update-board', value: board.serialize() });
         }
     }
 }
