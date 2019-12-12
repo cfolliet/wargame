@@ -2,7 +2,7 @@
 
 const canvas = document.getElementById('canvas');
 const board = new Board(canvas);
-const currentPlayer = null;
+let currentPlayer = null;
 
 document.addEventListener('click', event => {
     if (!currentPlayer) {
@@ -61,6 +61,8 @@ function receive(message) {
     console.log('msg', data);
     if (data.type == 'update-board') {
         board.load(data.value);
+    } else if (data.type == 'player-id') {
+        currentPlayer = board.players.get(data.value);
     }
 }
 

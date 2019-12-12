@@ -21,6 +21,7 @@ class Client {
         const player = this.board.createPlayer('player' + clients.size);
         this.playerId = player.id;
         this.send({ type: 'update-board', value: board.serialize() });
+        this.send({ type: 'player-id', value: this.playerId });
         this.broadcast({ type: 'update-board', value: board.serialize() });
     }
     leave() {
