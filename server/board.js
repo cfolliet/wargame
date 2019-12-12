@@ -16,8 +16,8 @@ function createId(len = 6, chars = 'abcdefghijklmnopqrstuvwxyz01234567890') {
 
 class Board {
     constructor() {
-        this.width = 100;
-        this.height = 100;
+        this.width = 300;
+        this.height = 300;
 
         this.players = new Map;
         this.bullets = new Set;

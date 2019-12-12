@@ -20,13 +20,14 @@ class Board {
         };
         requestAnimationFrame(this._frameCallback);
     }
-    createBullet(player, vel) {
+    createBullet(playerId, vel) {
+        const player = this.players.get(playerId);
         const bullet = new Bullet(player, vel);
         this.bullets.add(bullet);
         return bullet;
     }
-    movePlayer(player, axis, direction){        
-        player.vel[axis] = direction;
+    movePlayer(playerId, axis, direction){        
+        this.players.get(playerId).vel[axis] = direction;
     }
     loadPlayer(data) {
         const player = new Player();
