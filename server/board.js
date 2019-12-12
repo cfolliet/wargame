@@ -5,12 +5,20 @@ function requestAnimationFrame(f) {
     setImmediate(() => f(Date.now()))
 }
 
+function createId(len = 6, chars = 'abcdefghijklmnopqrstuvwxyz01234567890') {
+    let id = '';
+    while (len--) {
+        id += chars[Math.random() * chars.length | 0];
+    }
+    return id;
+}
+
 class Board {
     constructor() {
         this.width = 400;
         this.height = 400;
 
-        this.players = [];
+        this.players = new Map;
         this.bullets = new Set;
 
         let lastTime = null;
@@ -25,11 +33,14 @@ class Board {
         requestAnimationFrame(this._frameCallback);
     }
     createPlayer(name) {
-        const player = new Player(name);
+        const player = new Player(createId(), name);
         player.pos.x = this.width * Math.random();
         player.pos.y = this.height / 2 * Math.random();
-        this.players.push(player);
+        this.players.set(player.id, player);
         return player;
+    }
+    removePlayer(playerId) {
+        this.players.delete(playerId);
     }
     createBullet(player, vel) {
         const bullet = new Bullet(player, vel);
@@ -48,6 +59,9 @@ class Board {
             bullet.update(dt);
             bullet.collide(this)
         });
+    }
+    serialize() {
+        return { width: this.width, height: this.height, players: [...this.players.values()], bullets: [...this.bullets] };
     }
 }
 

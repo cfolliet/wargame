@@ -2,10 +2,13 @@
 
 const canvas = document.getElementById('canvas');
 const board = new Board(canvas);
-const currentPlayer = board.createPlayer('player 1');
-board.createPlayer('player 2');
+const currentPlayer = null;
 
 document.addEventListener('click', event => {
+    if (!currentPlayer) {
+        return;
+    }
+
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left - currentPlayer.pos.x;
     const y = event.clientY - rect.top - currentPlayer.pos.y;
@@ -15,6 +18,10 @@ document.addEventListener('click', event => {
 });
 
 document.addEventListener("keydown", event => {
+    if (!currentPlayer) {
+        return;
+    }
+    
     if (event.keyCode == 37) {
         board.movePlayer(currentPlayer, 'x', -1);
     } else if (event.keyCode == 38) {
@@ -27,6 +34,10 @@ document.addEventListener("keydown", event => {
 });
 
 document.addEventListener("keyup", event => {
+    if (!currentPlayer) {
+        return;
+    }
+    
     if (event.keyCode == 37) {
         board.movePlayer(currentPlayer, 'x', 0);
     } else if (event.keyCode == 38) {
@@ -46,7 +57,11 @@ conn.addEventListener('message', event => {
 
 function receive(message) {
     const data = JSON.parse(message);
-    console.log('Received message', data);
+
+    console.log('msg', data);
+    if (data.type == 'update-board') {
+        board.load(data.value);
+    }
 }
 
 function send(data) {

@@ -14,16 +14,19 @@ class Client {
         this.clients.add(this);
         this.conn = conn;
         this.board = null;
+        this.playerId = null;
     }
     join(board) {
         this.board = board;
-        this.board.createPlayer('player' + clients.size);
-        this.send(board);
-        this.broadcast({ type: 'update-board', value: board });
+        const player = this.board.createPlayer('player' + clients.size);
+        this.playerId = player.id;
+        this.send({ type: 'update-board', value: board.serialize() });
+        this.broadcast({ type: 'update-board', value: board.serialize() });
     }
     leave() {
         this.clients.delete(this);
-        this.broadcast({ type: 'update-board', value: board });
+        this.board.removePlayer(this.playerId);
+        this.broadcast({ type: 'update-board', value: board.serialize() });
     }
     send(data) {
         const msg = JSON.stringify(data);

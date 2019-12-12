@@ -2,8 +2,9 @@ const Rect = require('./rect.js');
 const Vec = require('./vec.js');
 
 class Player extends Rect {
-    constructor(name = '') {
+    constructor(id, name = '') {
         super(10, 10);
+        this.id = id;
         this.vel = new Vec;
         this.score = 0;
         this.name = name;
