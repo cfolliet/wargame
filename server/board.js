@@ -1,5 +1,6 @@
 const Player = require('./player.js');
 const Bullet = require('./bullet.js');
+const Vec = require('./vec.js');
 
 function requestAnimationFrame(f) {
     setImmediate(() => f(Date.now()))
@@ -42,9 +43,12 @@ class Board {
     removePlayer(playerId) {
         this.players.delete(playerId);
     }
-    createBullet(player, vel) {
+    createBullet(playerId, vec) {
+        const player = this.players.get(playerId);
+        const vel = new Vec(vec.x, vec.y);
         const bullet = new Bullet(player, vel);
         this.bullets.add(bullet);
+        return bullet;
     }
     movePlayer(playerId, axis, direction) {
         this.players.get(playerId).vel[axis] = direction;

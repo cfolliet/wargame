@@ -48,12 +48,13 @@ class Client {
         if(data.type != 'ping') console.log('received', data);
 
         if (data.type == 'create-bullet') {
-            //this.board.createBullet(data.value.playerId, data.value.vel);
-            this.broadcast(data);
+            this.board.createBullet(this.playerId, data.value);
+            this.broadcast({ type: 'update-board', value: board.serialize() });
+            this.send({ type: 'update-board', value: board.serialize() });
         } else if (data.type == 'move-player') {
             this.board.movePlayer(this.playerId, data.value.axis, data.value.direction);
-            this.send({ type: 'update-board', value: board.serialize() });
             this.broadcast({ type: 'update-board', value: board.serialize() });
+            this.send({ type: 'update-board', value: board.serialize() });
         } else if (data.type == 'ping') {
             this.send({ type: 'pong', value: data.value });
         }

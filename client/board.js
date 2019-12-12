@@ -33,10 +33,16 @@ class Board {
         Object.assign(player, data);
         this.players.set(player.id, player);
     }
+    loadBullet(data) {
+        const bullet = new Bullet(data.player, data.vel);
+        Object.assign(bullet, data);
+        this.bullets.add(bullet);
+    }
     load(data) {
         this.players.clear();
         data.players.forEach(p => this.loadPlayer(p));
-        //this.bullets = data.bullets;
+        this.bullets.clear();
+        data.bullets.forEach(p => this.loadBullet(p));
     }
     clear() {
         this._context.fillStyle = '#000';
