@@ -6,10 +6,13 @@ class Board {
         this.players = new Map;
         this.bullets = new Set;
 
+        this.ping = 999;
+        this.fps = 0;
         let lastTime = null;
         this._frameCallback = (millis) => {
             if (lastTime !== null) {
                 const diff = millis - lastTime;
+                this.fps = 1000 / diff | 0;
                 this.update(diff / 1000);
             }
             lastTime = millis;
@@ -48,12 +51,17 @@ class Board {
             this._context.fillText(player.name + ': ' + player.score, this._canvas.width - 100, 20 + index * 20, 100);
         });
     }
+    drawInfos(){
+        this._context.fillText('FPS: ' + this.fps, 20, 20);
+        this._context.fillText('Ping: ' + this.ping, 20, 35);
+    }
     draw() {
         this.clear();
 
         this.players.forEach(player => this.drawRect(player));
         this.bullets.forEach(bullet => this.drawRect(bullet));
         this.drawScore(this.players);
+        this.drawInfos();
     }
     update(dt) {
         this.players.forEach(player => {
