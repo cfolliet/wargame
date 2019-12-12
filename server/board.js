@@ -64,8 +64,8 @@ class Board {
             bullet.collide(this)
         });
     }
-    serialize() {
-        return { width: this.width, height: this.height, players: [...this.players.values()], bullets: [...this.bullets] };
+    serialize(currentPlayerId) {
+        return { width: this.width, height: this.height, currentPlayerId, players: [...this.players.values()], bullets: [...this.bullets] };
     }
 }
 

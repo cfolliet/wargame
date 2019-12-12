@@ -3,6 +3,7 @@ class Board {
         this._canvas = canvas;
         this._context = canvas.getContext('2d');
 
+        this.currentPlayerId = null;
         this.players = new Map;
         this.bullets = new Set;
 
@@ -20,14 +21,16 @@ class Board {
         };
         requestAnimationFrame(this._frameCallback);
     }
-    createBullet(playerId, vel) {
-        const player = this.players.get(playerId);
-        const bullet = new Bullet(player, vel);
+    currentPlayer() {
+        return this.players.get(this.currentPlayerId);
+    }
+    createBullet(vel) {
+        const bullet = new Bullet(this.currentPlayer(), vel);
         this.bullets.add(bullet);
         return bullet;
     }
-    movePlayer(playerId, axis, direction){        
-        this.players.get(playerId).vel[axis] = direction;
+    movePlayer(axis, direction) {
+        this.currentPlayer().vel[axis] = direction;
     }
     loadPlayer(data) {
         const player = new Player();
@@ -42,6 +45,7 @@ class Board {
     load(data) {
         this._canvas.width = data.width;
         this._canvas.height = data.height;
+        this.currentPlayerId = data.currentPlayerId;
         this.players.clear();
         data.players.forEach(p => this.loadPlayer(p));
         this.bullets.clear();
@@ -51,23 +55,25 @@ class Board {
         this._context.fillStyle = '#000';
         this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
     }
-    drawRect(rect) {
-        this._context.fillStyle = '#fff';
+    drawRect(rect, color = '#fff') {
+        this._context.fillStyle = color;
         this._context.fillRect(rect.left, rect.top, rect.size.x, rect.size.y);
     }
     drawScore(players) {
+        this._context.fillStyle = '#fff';
         [...players.values()].sort((a, b) => b.score - a.score).forEach((player, index) => {
             this._context.fillText(player.name + ': ' + player.score, this._canvas.width - 100, 20 + index * 20, 100);
         });
     }
-    drawInfos(){
+    drawInfos() {
+        this._context.fillStyle = '#fff';
         this._context.fillText('FPS: ' + this.fps, 20, 20);
         this._context.fillText('Ping: ' + this.ping, 20, 35);
     }
     draw() {
         this.clear();
 
-        this.players.forEach(player => this.drawRect(player));
+        this.players.forEach(player => this.drawRect(player, player.id === this.currentPlayerId ? 'blue' : 'red'));
         this.bullets.forEach(bullet => this.drawRect(bullet));
         this.drawScore(this.players);
         this.drawInfos();
