@@ -4,14 +4,30 @@ const canvas = document.getElementById('canvas');
 const board = new Board(canvas);
 let currentPlayerId = null;
 
-document.addEventListener('click', event => {
+function fire() {
     const rect = canvas.getBoundingClientRect();
     const player = board.currentPlayer();
-    const x = event.clientX - rect.left - player.pos.x;
-    const y = event.clientY - rect.top - player.pos.y;
+    const x = fireTarget.x - rect.left - player.pos.x;
+    const y = fireTarget.y - rect.top - player.pos.y;
     const vel = new Vec(x, y);
     const bullet = board.createBullet(vel);
     send({ type: 'create-bullet', value: vel });
+}
+
+let fireInterval = null;
+let fireTarget = null;
+document.addEventListener('click', event => {
+    fireTarget = { x: event.clientX, y: event.clientY };
+    fire();
+});
+document.addEventListener('mousemove', event => {
+    fireTarget = { x: event.clientX, y: event.clientY };
+});
+document.addEventListener('mousedown', event => {
+    fireInterval = setInterval(fire, 300);
+});
+document.addEventListener('mouseup', event => {
+    clearInterval(fireInterval);
 });
 
 document.addEventListener("keydown", event => {
@@ -62,7 +78,7 @@ conn.addEventListener('message', event => {
 function receive(message) {
     const data = JSON.parse(message);
 
-    if(data.type != 'pong') console.log('msg', data);
+    if (data.type != 'pong') console.log('msg', data);
 
     if (data.type == 'update-board') {
         board.load(data.value);
