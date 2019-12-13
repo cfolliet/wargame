@@ -4,6 +4,7 @@ class Player extends Rect {
         this.vel = new Vec;
         this.score = 0;
         this.name = name;
+        this.color =  'grey';
     }
     update(dt) {
         const vel = new Vec(this.vel.x, this.vel.y);

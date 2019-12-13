@@ -55,9 +55,13 @@ class Board {
         this._context.fillStyle = '#000';
         this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
     }
-    drawRect(rect, color = '#fff') {
+    drawRect(rect, color = '#fff', stroke) {
         this._context.fillStyle = color;
         this._context.fillRect(rect.left, rect.top, rect.size.x, rect.size.y);
+        if (stroke) {
+            this._context.strokeStyle = '#fff';
+            this._context.strokeRect(rect.left, rect.top, rect.size.x, rect.size.y);
+        }
     }
     drawScore(players) {
         this._context.fillStyle = '#fff';
@@ -73,7 +77,7 @@ class Board {
     draw() {
         this.clear();
 
-        this.players.forEach(player => this.drawRect(player, player.id === this.currentPlayerId ? 'blue' : 'red'));
+        this.players.forEach(player => this.drawRect(player, player.color, true));
         this.bullets.forEach(bullet => this.drawRect(bullet));
         this.drawScore(this.players);
         this.drawInfos();
