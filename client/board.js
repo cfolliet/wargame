@@ -6,6 +6,7 @@ class Board {
         this.currentPlayerId = null;
         this.players = new Map;
         this.bullets = new Set;
+        this.walls = [];
 
         this.ping = 999;
         this.fps = 0;
@@ -44,6 +45,15 @@ class Board {
         Object.assign(bullet, data);
         this.bullets.add(bullet);
     }
+    loadMap(map) {
+        this.walls = [];
+        map.forEach(w => {
+            const wall = new Rect(w.size.x, w.size.y);
+            wall.pos.x = w.pos.x;
+            wall.pos.y = w.pos.y;
+            this.walls.push(wall);
+        });
+    }
     load(data) {
         this._canvas.width = data.width;
         this._canvas.height = data.height;
@@ -52,6 +62,7 @@ class Board {
         data.players.forEach(p => this.loadPlayer(p));
         this.bullets.clear();
         data.bullets.forEach(b => this.loadBullet(b));
+        this.loadMap(data.walls);
     }
     clear() {
         this._context.fillStyle = '#000';
@@ -85,6 +96,7 @@ class Board {
 
         this.players.forEach(player => this.drawRect(player, player.color, true));
         this.bullets.forEach(bullet => this.drawRect(bullet));
+        this.walls.forEach(wall => this.drawRect(wall));
         this.drawScore(this.players);
         this.drawInfos();
     }
