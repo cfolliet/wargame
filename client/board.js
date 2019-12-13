@@ -24,8 +24,10 @@ class Board {
     currentPlayer() {
         return this.players.get(this.currentPlayerId);
     }
-    createBullet(vel) {
-        const bullet = new Bullet(this.currentPlayer(), vel);
+    createBullet(vec) {
+        const player = this.currentPlayer();
+        const vel = new Vec(vec.x - player.pos.x, vec.y - player.pos.y);
+        const bullet = new Bullet(player, vel);
         this.bullets.add(bullet);
         return bullet;
     }
@@ -49,19 +51,27 @@ class Board {
         this.players.clear();
         data.players.forEach(p => this.loadPlayer(p));
         this.bullets.clear();
-        data.bullets.forEach(p => this.loadBullet(p));
+        data.bullets.forEach(b => this.loadBullet(b));
     }
     clear() {
         this._context.fillStyle = '#000';
         this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
     }
-    drawRect(rect, color = '#fff') {
+    drawRect(rect, color = '#fff', stroke) {
         this._context.fillStyle = color;
         this._context.fillRect(rect.left, rect.top, rect.size.x, rect.size.y);
+        if (stroke) {
+            this._context.strokeStyle = '#fff';
+            this._context.strokeRect(rect.left, rect.top, rect.size.x, rect.size.y);
+        }
     }
     drawScore(players) {
         this._context.fillStyle = '#fff';
         [...players.values()].sort((a, b) => b.score - a.score).forEach((player, index) => {
+            this._context.fillStyle = player.color;
+            this._context.fillRect(this._canvas.width - 115, 12 + index * 20, 10, 10);
+            this._context.strokeStyle = '#fff';
+            this._context.strokeRect(this._canvas.width - 115, 12 + index * 20, 10, 10);
             this._context.fillText(player.name + ': ' + player.score, this._canvas.width - 100, 20 + index * 20, 100);
         });
     }
@@ -73,7 +83,7 @@ class Board {
     draw() {
         this.clear();
 
-        this.players.forEach(player => this.drawRect(player, player.id === this.currentPlayerId ? 'blue' : 'red'));
+        this.players.forEach(player => this.drawRect(player, player.color, true));
         this.bullets.forEach(bullet => this.drawRect(bullet));
         this.drawScore(this.players);
         this.drawInfos();

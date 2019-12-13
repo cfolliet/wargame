@@ -20,15 +20,18 @@ class Client {
         this.board = board;
         const player = this.board.createPlayer('player' + clients.size);
         this.playerId = player.id;
-        this.send({ type: 'update-board', value: board.serialize(this.playerId) });
-        this.broadcast({ type: 'update-board', value: board.serialize(this.playerId) });
+        this.send({ type: 'update-board', value: board.serialize() });
+        this.broadcast({ type: 'update-board', value: board.serialize() });
     }
     leave() {
         this.clients.delete(this);
         this.board.removePlayer(this.playerId);
-        this.broadcast({ type: 'update-board', value: board.serialize(this.playerId) });
+        this.broadcast({ type: 'update-board', value: board.serialize() });
     }
     send(data) {
+        if (typeof data.value === 'object') {
+            data.value.currentPlayerId = this.playerId;
+        }
         const msg = JSON.stringify(data);
         this.conn.send(msg);
     }
@@ -44,16 +47,16 @@ class Client {
     receive(message) {
         const data = JSON.parse(message);
 
-        if(data.type != 'ping') console.log('received', data);
+        if (data.type != 'ping') console.log('received', data);
 
         if (data.type == 'create-bullet') {
             this.board.createBullet(this.playerId, data.value);
-            this.broadcast({ type: 'update-board', value: board.serialize(this.playerId) });
-            this.send({ type: 'update-board', value: board.serialize(this.playerId) });
+            this.broadcast({ type: 'update-board', value: board.serialize() });
+            this.send({ type: 'update-board', value: board.serialize() });
         } else if (data.type == 'move-player') {
             this.board.movePlayer(this.playerId, data.value.axis, data.value.direction);
-            this.broadcast({ type: 'update-board', value: board.serialize(this.playerId) });
-            this.send({ type: 'update-board', value: board.serialize(this.playerId) });
+            this.broadcast({ type: 'update-board', value: board.serialize() });
+            this.send({ type: 'update-board', value: board.serialize() });
         } else if (data.type == 'ping') {
             this.send({ type: 'pong', value: data.value });
         }

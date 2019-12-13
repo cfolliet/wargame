@@ -5,23 +5,20 @@ const board = new Board(canvas);
 let currentPlayerId = null;
 
 function fire() {
-    const rect = canvas.getBoundingClientRect();
-    const player = board.currentPlayer();
-    const x = fireTarget.x - rect.left - player.pos.x;
-    const y = fireTarget.y - rect.top - player.pos.y;
-    const vel = new Vec(x, y);
-    const bullet = board.createBullet(vel);
-    send({ type: 'create-bullet', value: vel });
+    const bullet = board.createBullet(fireTarget);
+    send({ type: 'create-bullet', value: fireTarget });
 }
 
 let fireInterval = null;
 let fireTarget = null;
 document.addEventListener('click', event => {
-    fireTarget = { x: event.clientX, y: event.clientY };
+    const rect = canvas.getBoundingClientRect();
+    fireTarget = { x: event.clientX - rect.left, y: event.clientY - rect.top };
     fire();
 });
 document.addEventListener('mousemove', event => {
-    fireTarget = { x: event.clientX, y: event.clientY };
+    const rect = canvas.getBoundingClientRect();
+    fireTarget = { x: event.clientX - rect.left, y: event.clientY - rect.top };
 });
 document.addEventListener('mousedown', event => {
     fireInterval = setInterval(fire, 300);
@@ -31,38 +28,38 @@ document.addEventListener('mouseup', event => {
 });
 
 document.addEventListener("keydown", event => {
-    if (event.keyCode == 37) {
+    if (event.keyCode == 37 || event.keyCode == 81) {
         send({ type: 'move-player', value: { axis: 'x', direction: -1 } });
         board.movePlayer('x', -1);
-    } else if (event.keyCode == 38) {
+    } else if (event.keyCode == 38 || event.keyCode == 90) {
         send({ type: 'move-player', value: { axis: 'y', direction: -1 } });
         board.movePlayer('y', -1);
-    } else if (event.keyCode == 39) {
+    } else if (event.keyCode == 39 || event.keyCode == 68) {
         send({ type: 'move-player', value: { axis: 'x', direction: 1 } });
         board.movePlayer('x', 1);
-    } else if (event.keyCode == 40) {
+    } else if (event.keyCode == 40 || event.keyCode == 83) {
         send({ type: 'move-player', value: { axis: 'y', direction: 1 } });
         board.movePlayer('y', 1);
     }
 });
 
 document.addEventListener("keyup", event => {
-    if (event.keyCode == 37) {
+    if (event.keyCode == 37 || event.keyCode == 81) {
         send({ type: 'move-player', value: { axis: 'x', direction: 0 } });
         board.movePlayer('x', 0);
-    } else if (event.keyCode == 38) {
+    } else if (event.keyCode == 38 || event.keyCode == 90) {
         send({ type: 'move-player', value: { axis: 'y', direction: 0 } });
         board.movePlayer('y', 0);
-    } else if (event.keyCode == 39) {
+    } else if (event.keyCode == 39 || event.keyCode == 68) {
         send({ type: 'move-player', value: { axis: 'x', direction: 0 } });
         board.movePlayer('x', 0);
-    } else if (event.keyCode == 40) {
+    } else if (event.keyCode == 40 || event.keyCode == 83) {
         send({ type: 'move-player', value: { axis: 'y', direction: 0 } });
         board.movePlayer('y', 0);
     }
 });
 
-const address = 'ws://localhost:9000';
+const address = 'ws://10.100.0.200:9000';
 //const address = 'ws://' + window.location.hostname + ':9000';
 var conn = new WebSocket(address);
 

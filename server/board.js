@@ -45,7 +45,7 @@ class Board {
     }
     createBullet(playerId, vec) {
         const player = this.players.get(playerId);
-        const vel = new Vec(vec.x, vec.y);
+        const vel = new Vec(vec.x - player.pos.x, vec.y - player.pos.y);
         const bullet = new Bullet(player, vel);
         this.bullets.add(bullet);
         return bullet;
@@ -64,8 +64,8 @@ class Board {
             bullet.collide(this)
         });
     }
-    serialize(currentPlayerId) {
-        return { width: this.width, height: this.height, currentPlayerId, players: [...this.players.values()], bullets: [...this.bullets] };
+    serialize() {
+        return { width: this.width, height: this.height, players: [...this.players.values()], bullets: [...this.bullets] };
     }
 }
 

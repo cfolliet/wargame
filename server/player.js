@@ -8,6 +8,7 @@ class Player extends Rect {
         this.vel = new Vec;
         this.score = 0;
         this.name = name;
+        this.color = '#' + (Math.random() * 16777215 | 0).toString(16);
     }
     update(dt) {
         const vel = new Vec(this.vel.x, this.vel.y);
