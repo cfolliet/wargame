@@ -3,13 +3,17 @@ class Board {
         this._canvas = canvas;
         this._context = canvas.getContext('2d');
 
-        this.players = [];
+        this.currentPlayerId = null;
+        this.players = new Map;
         this.bullets = new Set;
 
+        this.ping = 999;
+        this.fps = 0;
         let lastTime = null;
         this._frameCallback = (millis) => {
             if (lastTime !== null) {
                 const diff = millis - lastTime;
+                this.fps = 1000 / diff | 0;
                 this.update(diff / 1000);
             }
             lastTime = millis;
@@ -17,39 +21,62 @@ class Board {
         };
         requestAnimationFrame(this._frameCallback);
     }
-    createPlayer(name) {
-        const player = new Player(name);
-        player.pos.x = this._canvas.width * Math.random();
-        player.pos.y = this._canvas.height / 2 * Math.random();
-        this.players.push(player);
-        return player;
+    currentPlayer() {
+        return this.players.get(this.currentPlayerId);
     }
-    createBullet(player, vel) {
-        const bullet = new Bullet(player, vel);
+    createBullet(vel) {
+        const bullet = new Bullet(this.currentPlayer(), vel);
+        this.bullets.add(bullet);
+        return bullet;
+    }
+    movePlayer(axis, direction) {
+        this.currentPlayer().vel[axis] = direction;
+    }
+    loadPlayer(data) {
+        const player = new Player();
+        Object.assign(player, data);
+        this.players.set(player.id, player);
+    }
+    loadBullet(data) {
+        const bullet = new Bullet(data.player, data.vel);
+        Object.assign(bullet, data);
         this.bullets.add(bullet);
     }
-    movePlayer(player, axis, direction){        
-        player.vel[axis] = direction;
+    load(data) {
+        this._canvas.width = data.width;
+        this._canvas.height = data.height;
+        this.currentPlayerId = data.currentPlayerId;
+        this.players.clear();
+        data.players.forEach(p => this.loadPlayer(p));
+        this.bullets.clear();
+        data.bullets.forEach(p => this.loadBullet(p));
     }
     clear() {
         this._context.fillStyle = '#000';
         this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
     }
-    drawRect(rect) {
-        this._context.fillStyle = '#fff';
+    drawRect(rect, color = '#fff') {
+        this._context.fillStyle = color;
         this._context.fillRect(rect.left, rect.top, rect.size.x, rect.size.y);
     }
     drawScore(players) {
-        players.slice().sort((a, b) => b.score - a.score).forEach((player, index) => {
+        this._context.fillStyle = '#fff';
+        [...players.values()].sort((a, b) => b.score - a.score).forEach((player, index) => {
             this._context.fillText(player.name + ': ' + player.score, this._canvas.width - 100, 20 + index * 20, 100);
         });
+    }
+    drawInfos() {
+        this._context.fillStyle = '#fff';
+        this._context.fillText('FPS: ' + this.fps, 20, 20);
+        this._context.fillText('Ping: ' + this.ping, 20, 35);
     }
     draw() {
         this.clear();
 
-        this.players.forEach(player => this.drawRect(player));
+        this.players.forEach(player => this.drawRect(player, player.id === this.currentPlayerId ? 'blue' : 'red'));
         this.bullets.forEach(bullet => this.drawRect(bullet));
         this.drawScore(this.players);
+        this.drawInfos();
     }
     update(dt) {
         this.players.forEach(player => {
