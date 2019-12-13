@@ -5,23 +5,20 @@ const board = new Board(canvas);
 let currentPlayerId = null;
 
 function fire() {
-    const rect = canvas.getBoundingClientRect();
-    const player = board.currentPlayer();
-    const x = fireTarget.x - rect.left - player.pos.x;
-    const y = fireTarget.y - rect.top - player.pos.y;
-    const vel = new Vec(x, y);
-    const bullet = board.createBullet(vel);
-    send({ type: 'create-bullet', value: vel });
+    const bullet = board.createBullet(fireTarget);
+    send({ type: 'create-bullet', value: fireTarget });
 }
 
 let fireInterval = null;
 let fireTarget = null;
 document.addEventListener('click', event => {
-    fireTarget = { x: event.clientX, y: event.clientY };
+    const rect = canvas.getBoundingClientRect();
+    fireTarget = { x: event.clientX - rect.left, y: event.clientY - rect.top };
     fire();
 });
 document.addEventListener('mousemove', event => {
-    fireTarget = { x: event.clientX, y: event.clientY };
+    const rect = canvas.getBoundingClientRect();
+    fireTarget = { x: event.clientX - rect.left, y: event.clientY - rect.top };
 });
 document.addEventListener('mousedown', event => {
     fireInterval = setInterval(fire, 300);
@@ -62,7 +59,7 @@ document.addEventListener("keyup", event => {
     }
 });
 
-const address = 'ws://localhost:9000';
+const address = 'ws://10.100.0.200:9000';
 //const address = 'ws://' + window.location.hostname + ':9000';
 var conn = new WebSocket(address);
 

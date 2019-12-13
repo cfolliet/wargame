@@ -45,7 +45,7 @@ class Board {
     }
     createBullet(playerId, vec) {
         const player = this.players.get(playerId);
-        const vel = new Vec(vec.x, vec.y);
+        const vel = new Vec(vec.x - player.pos.x, vec.y - player.pos.y);
         const bullet = new Bullet(player, vel);
         this.bullets.add(bullet);
         return bullet;

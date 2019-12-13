@@ -24,8 +24,10 @@ class Board {
     currentPlayer() {
         return this.players.get(this.currentPlayerId);
     }
-    createBullet(vel) {
-        const bullet = new Bullet(this.currentPlayer(), vel);
+    createBullet(vec) {
+        const player = this.currentPlayer();
+        const vel = new Vec(vec.x - player.pos.x, vec.y - player.pos.y);
+        const bullet = new Bullet(player, vel);
         this.bullets.add(bullet);
         return bullet;
     }
@@ -49,7 +51,7 @@ class Board {
         this.players.clear();
         data.players.forEach(p => this.loadPlayer(p));
         this.bullets.clear();
-        data.bullets.forEach(p => this.loadBullet(p));
+        data.bullets.forEach(b => this.loadBullet(b));
     }
     clear() {
         this._context.fillStyle = '#000';
