@@ -77,3 +77,6 @@ server.on('connection', conn => {
 
     client.join(board);
 });
+
+var httpserver = require('./httpserver.js');
+httpserver.start();
