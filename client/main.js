@@ -59,7 +59,7 @@ document.addEventListener("keyup", event => {
     }
 });
 
-const address = 'ws://10.100.0.200:9000';
+const address = 'ws://localhost:9000';
 //const address = 'ws://' + window.location.hostname + ':9000';
 var conn = new WebSocket(address);
 

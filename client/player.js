@@ -16,7 +16,7 @@ class Player extends Rect {
     }
     collide(game, dt) {
         const canvas = game._canvas;
-        const players = game.players;
+        const objects = [...game.walls, ...game.players.values()];
 
         const vel = new Vec(this.vel.x, this.vel.y);
         if (vel.len) {
@@ -28,11 +28,11 @@ class Player extends Rect {
             this.pos.x -= vel.x * dt;
             this.pos.y -= vel.y * dt;
         } else {
-            players.forEach(player => {
+            objects.forEach(object => {
                 // todo => use for loop to break at the first collide
-                if (player !== this) {
-                    if (player.left < this.right && player.right > this.left &&
-                        player.top < this.bottom && player.bottom > this.top) {
+                if (object !== this) {
+                    if (object.left < this.right && object.right > this.left &&
+                        object.top < this.bottom && object.bottom > this.top) {
                         this.pos.x -= vel.x * dt;
                         this.pos.y -= vel.y * dt;
                     }

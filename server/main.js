@@ -1,8 +1,14 @@
 const WebSocket = require('ws');
 const Board = require('./board.js');
 
+//x, y, w, h
+const defaultMap = [
+        [100, 50, 100, 20],
+        [100, 200, 20, 100],
+    ];
 
 const board = new Board;
+board.setMap(defaultMap);
 
 const server = new WebSocket.Server({ port: 9000 });
 

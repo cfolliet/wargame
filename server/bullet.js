@@ -22,11 +22,19 @@ class Bullet extends Rect {
         const width = game.width;
         const height = game.height;
         const players = game.players;
+        const walls = game.walls;
 
         if (this.left < 0 || this.right > width
             || this.top < 0 || this.bottom > height) {
             bullets.delete(this);
         } else {
+            walls.forEach(wall => {
+                if (wall.left < this.right && wall.right > this.left &&
+                    wall.top < this.bottom && wall.bottom > this.top) {
+                    bullets.delete(this);
+                }
+            });
+
             players.forEach(player => {
                 if (player !== this.player &&
                     player.left < this.right && player.right > this.left &&
