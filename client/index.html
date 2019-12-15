@@ -6,11 +6,22 @@
         #canvas {
             cursor: crosshair;
         }
+
+        #settings {
+            display: none;
+        }
     </style>
 </header>
 
 <body>
-    <canvas id="canvas" width="1" height="1"></canvas>
+    <button id="settings-toggler">Settings...</button>
+    <div>
+        <canvas id="canvas" width="1" height="1"> </canvas>
+    </div>
+    <div id="settings">
+        <label>Name:</label><input type="text" id="name">
+        <button id="save-settings">Save</button>
+    </div>
 
     <script src="vec.js"></script>
     <script src="rect.js"></script>
@@ -19,4 +30,5 @@
     <script src="board.js"></script>
     <script src="main.js"></script>
 </body>
+
 </html>

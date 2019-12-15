@@ -64,6 +64,7 @@ const address = 'ws://localhost:9000';
 var conn = new WebSocket(address);
 
 conn.addEventListener('open', event => {
+    loadSettings();
     setInterval(() => {
         send({ type: 'ping', value: performance.now() });
     }, 500);
@@ -88,4 +89,39 @@ function receive(message) {
 function send(data) {
     const msg = JSON.stringify(data);
     this.conn.send(msg);
+}
+
+const settingsToggler = document.getElementById('settings-toggler');
+const settings = document.getElementById('settings');
+const saveSettings = document.getElementById('save-settings');
+
+settingsToggler.addEventListener('click', () => {
+    if (settings.style.display == 'block') {
+        canvas.style.display = 'block';
+        settings.style.display = 'none';
+    } else {
+        canvas.style.display = 'none';
+        settings.style.display = 'block';
+    }
+});
+
+saveSettings.addEventListener('click', () => {
+    const settings = {
+        type: 'save-settings',
+        value: {
+            name: document.getElementById('name').value
+        }
+    }
+    localStorage.setItem('settings', JSON.stringify(settings.value));
+    send(settings);
+});
+
+function loadSettings() {
+    const stringSettings = localStorage.getItem('settings');
+    if (stringSettings) {
+        const settings = JSON.parse(stringSettings);
+        document.getElementById('name').value = settings.name;
+
+        send({ type: 'save-settings', value: settings });
+    }
 }

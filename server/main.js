@@ -3,9 +3,9 @@ const Board = require('./board.js');
 
 //x, y, w, h
 const defaultMap = [
-        [100, 50, 100, 20],
-        [100, 200, 20, 100],
-    ];
+    [100, 50, 100, 20],
+    [100, 200, 20, 100],
+];
 
 const board = new Board;
 board.setMap(defaultMap);
@@ -61,6 +61,12 @@ class Client {
             this.send({ type: 'update-board', value: board.serialize() });
         } else if (data.type == 'move-player') {
             this.board.movePlayer(this.playerId, data.value.axis, data.value.direction);
+            this.broadcast({ type: 'update-board', value: board.serialize() });
+            this.send({ type: 'update-board', value: board.serialize() });
+        } else if (data.type == 'save-settings') {
+            if (data.value.name) {
+                this.board.players.get(this.playerId).name = data.value.name;
+            }
             this.broadcast({ type: 'update-board', value: board.serialize() });
             this.send({ type: 'update-board', value: board.serialize() });
         } else if (data.type == 'ping') {
