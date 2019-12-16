@@ -3,7 +3,7 @@ const Bullet = require('./bullet.js');
 const Rect = require('./rect.js');
 const Vec = require('./vec.js');
 
-const ROUND_DURATION = 1000 * 60 * 15; // 15 min
+const ROUND_DURATION = 1000 * 60 * 2;
 
 function requestAnimationFrame(f) {
     setImmediate(() => f(Date.now()))
@@ -23,10 +23,9 @@ class Board {
         this.height = 300;
 
         this.players = new Map;
-        this.bullets = new Set;
         this.walls = [];
-        this.roundStartTimestamp = Date.now();
-        this.roundDuration = ROUND_DURATION;
+
+        this.reset();
 
         let lastTime = null;
         this._frameCallback = (millis) => {
@@ -68,6 +67,9 @@ class Board {
         });
     }
     update(dt) {
+        if (this.roundStartTimestamp + this.roundDuration <= Date.now()) {
+            this.reset();
+        }
         this.players.forEach(player => {
             player.update(dt);
             player.collide(this, dt);
@@ -77,6 +79,14 @@ class Board {
             bullet.update(dt);
             bullet.collide(this)
         });
+    }
+    reset() {
+        this.players.forEach(player => {
+            player.score = 0;
+        });
+        this.bullets = new Set;
+        this.roundStartTimestamp = Date.now();
+        this.roundDuration = ROUND_DURATION;
     }
     serialize() {
         return {
