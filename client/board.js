@@ -8,6 +8,9 @@ class Board {
         this.bullets = new Set;
         this.walls = [];
 
+        this.roundStartTimestamp = null;
+        this.roundDuration = null;
+
         this.ping = 999;
         this.fps = 0;
         let lastTime = null;
@@ -57,6 +60,8 @@ class Board {
     load(data) {
         this._canvas.width = data.width;
         this._canvas.height = data.height;
+        this.roundStartTimestamp = data.roundStartTimestamp;
+        this.roundDuration = data.roundDuration;
         this.currentPlayerId = data.currentPlayerId;
         this.players.clear();
         data.players.forEach(p => this.loadPlayer(p));
@@ -76,14 +81,20 @@ class Board {
             this._context.strokeRect(rect.left, rect.top, rect.size.x, rect.size.y);
         }
     }
+    drawTime() {
+        this._context.fillStyle = '#fff';
+        const duration = (this.roundStartTimestamp + this.roundDuration - Date.now()) / 1000;
+        const formated = duration > 60 ? (duration / 60 | 0) + ' min' : (duration | 0) + ' sec';
+        this._context.fillText('Time left: ' + formated, this._canvas.width - 100, 20, 100);
+    }
     drawScore(players) {
         this._context.fillStyle = '#fff';
         [...players.values()].sort((a, b) => b.score - a.score).forEach((player, index) => {
             this._context.fillStyle = player.color;
-            this._context.fillRect(this._canvas.width - 115, 12 + index * 20, 10, 10);
+            this._context.fillRect(this._canvas.width - 115, 32 + index * 20, 10, 10);
             this._context.strokeStyle = '#fff';
-            this._context.strokeRect(this._canvas.width - 115, 12 + index * 20, 10, 10);
-            this._context.fillText(player.name + ': ' + player.score, this._canvas.width - 100, 20 + index * 20, 100);
+            this._context.strokeRect(this._canvas.width - 115, 32 + index * 20, 10, 10);
+            this._context.fillText(player.name + ': ' + player.score, this._canvas.width - 100, 40 + index * 20, 100);
         });
     }
     drawInfos() {
@@ -94,6 +105,7 @@ class Board {
     draw() {
         this.clear();
 
+        this.drawTime();
         this.players.forEach(player => this.drawRect(player, player.color, true));
         this.bullets.forEach(bullet => this.drawRect(bullet));
         this.walls.forEach(wall => this.drawRect(wall));
