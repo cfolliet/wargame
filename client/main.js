@@ -1,12 +1,11 @@
 
-
 const canvas = document.getElementById('canvas');
 const board = new Board(canvas);
 let currentPlayerId = null;
 
 function fire() {
     const bullet = board.createBullet(fireTarget);
-    send({ type: 'create-bullet', value: fireTarget });
+    webSocketServer.send({ type: 'create-bullet', value: fireTarget });
 }
 
 let fireInterval = null;
@@ -29,58 +28,58 @@ document.addEventListener('mouseup', event => {
 
 document.addEventListener("keydown", event => {
     if (event.keyCode == 37 || event.keyCode == 81) {
-        send({ type: 'move-player', value: { axis: 'x', direction: -1 } });
+        webSocketServer.send({ type: 'move-player', value: { axis: 'x', direction: -1 } });
         board.movePlayer('x', -1);
     } else if (event.keyCode == 38 || event.keyCode == 90) {
-        send({ type: 'move-player', value: { axis: 'y', direction: -1 } });
+        webSocketServer.send({ type: 'move-player', value: { axis: 'y', direction: -1 } });
         board.movePlayer('y', -1);
     } else if (event.keyCode == 39 || event.keyCode == 68) {
-        send({ type: 'move-player', value: { axis: 'x', direction: 1 } });
+        webSocketServer.send({ type: 'move-player', value: { axis: 'x', direction: 1 } });
         board.movePlayer('x', 1);
     } else if (event.keyCode == 40 || event.keyCode == 83) {
-        send({ type: 'move-player', value: { axis: 'y', direction: 1 } });
+        webSocketServer.send({ type: 'move-player', value: { axis: 'y', direction: 1 } });
         board.movePlayer('y', 1);
     }
 });
 
 document.addEventListener("keyup", event => {
     if (event.keyCode == 37 || event.keyCode == 81) {
-        send({ type: 'move-player', value: { axis: 'x', direction: 0 } });
+        webSocketServer.send({ type: 'move-player', value: { axis: 'x', direction: 0 } });
         board.movePlayer('x', 0);
     } else if (event.keyCode == 38 || event.keyCode == 90) {
-        send({ type: 'move-player', value: { axis: 'y', direction: 0 } });
+        webSocketServer.send({ type: 'move-player', value: { axis: 'y', direction: 0 } });
         board.movePlayer('y', 0);
     } else if (event.keyCode == 39 || event.keyCode == 68) {
-        send({ type: 'move-player', value: { axis: 'x', direction: 0 } });
+        webSocketServer.send({ type: 'move-player', value: { axis: 'x', direction: 0 } });
         board.movePlayer('x', 0);
     } else if (event.keyCode == 40 || event.keyCode == 83) {
-        send({ type: 'move-player', value: { axis: 'y', direction: 0 } });
+        webSocketServer.send({ type: 'move-player', value: { axis: 'y', direction: 0 } });
         board.movePlayer('y', 0);
     }
 });
 
 let serverConfig = null;
 
-function getServerConfig() {
-    return fetch('/config').then(response => response.json()).then(data => serverConfig = data);
+async function getServerConfig() {
+    const response = await fetch('/config');
+    const data = await response.json();
+    return serverConfig = data;
 }
 
-let conn = null;
+function getUserSettings() {
+    let settings = null;
+    const stringSettings = localStorage.getItem('settings');
+    if (stringSettings) {
+        settings = JSON.parse(stringSettings);
+    }
 
+    return settings;
+}
+
+let webSocketServer = null;
 getServerConfig().then(() => {
-
-    conn = new WebSocket(`ws://${serverConfig.webSocketServerIp}:9000`);
-
-    conn.addEventListener('open', event => {
-        loadUserSettings();
-        setInterval(() => {
-            send({ type: 'ping', value: performance.now() });
-        }, 500);
-    });
-
-    conn.addEventListener('message', event => {
-        receive(event.data);
-    });
+    const webSocketServerIp = `ws://${serverConfig.webSocketServerIp}:9000`;
+    webSocketServer = new WebSocketManager(webSocketServerIp, getUserSettings(), receive);
 });
 
 function receive(message) {
@@ -95,10 +94,7 @@ function receive(message) {
     }
 }
 
-function send(data) {
-    const msg = JSON.stringify(data);
-    conn.send(msg);
-}
+
 
 const settingsToggler = document.getElementById('settings-toggler');
 const settings = document.getElementById('settings');
@@ -122,15 +118,5 @@ saveSettings.addEventListener('click', () => {
         }
     }
     localStorage.setItem('settings', JSON.stringify(settings.value));
-    send(settings);
+    webSocketServer.send(settings);
 });
-
-function loadUserSettings() {
-    const stringSettings = localStorage.getItem('settings');
-    if (stringSettings) {
-        const settings = JSON.parse(stringSettings);
-        document.getElementById('name').value = settings.name;
-
-        send({ type: 'save-settings', value: settings });
-    }
-}
