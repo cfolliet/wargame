@@ -21,22 +21,15 @@ class Client {
         this.conn = conn;
         this.board = null;
         this.playerId = null;
-        this.lastRefresh = null;
-        this.refreshInterval = null;
     }
     join(board) {
         this.board = board;
         const player = this.board.createPlayer('player' + clients.size);
         this.playerId = player.id;
-        this.refreshInterval = setInterval(() => {
-            if (this.lastRefresh === null || this.lastRefresh + 100 < Date.now()) {
-                this.send({ type: 'update-board', value: this.board.serialize() });
-            }
-        }, 100);
+        this.send({ type: 'update-board', value: this.board.serialize() });
         this.broadcast({ type: 'update-board', value: board.serialize() });
     }
     leave() {
-        clearInterval(this.refreshInterval);
         this.clients.delete(this);
         this.board.removePlayer(this.playerId);
         this.broadcast({ type: 'update-board', value: board.serialize() });
@@ -44,7 +37,6 @@ class Client {
     send(data) {
         if (typeof data.value === 'object') {
             data.value.currentPlayerId = this.playerId;
-            this.lastRefresh = Date.now();
         }
         const msg = JSON.stringify(data);
         this.conn.send(msg);
