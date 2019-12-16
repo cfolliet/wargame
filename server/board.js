@@ -3,7 +3,8 @@ const Bullet = require('./bullet.js');
 const Rect = require('./rect.js');
 const Vec = require('./vec.js');
 
-const ROUND_DURATION = 1000 * 60 * 2;
+const ROUND_DURATION = 1000 * 30;
+const ROUND_RESULT_DURATION = 1000 * 10;
 
 function requestAnimationFrame(f) {
     setImmediate(() => f(Date.now()))
@@ -67,18 +68,19 @@ class Board {
         });
     }
     update(dt) {
-        if (this.roundStartTimestamp + this.roundDuration <= Date.now()) {
+        if (this.roundStartTimestamp + this.roundDuration > Date.now()) {
+            this.players.forEach(player => {
+                player.update(dt);
+                player.collide(this, dt);
+            }
+            );
+            this.bullets.forEach(bullet => {
+                bullet.update(dt);
+                bullet.collide(this)
+            });
+        } else if (this.roundStartTimestamp + this.roundDuration + this.roundResultDuration <= Date.now()) {
             this.reset();
         }
-        this.players.forEach(player => {
-            player.update(dt);
-            player.collide(this, dt);
-        }
-        );
-        this.bullets.forEach(bullet => {
-            bullet.update(dt);
-            bullet.collide(this)
-        });
     }
     reset() {
         this.players.forEach(player => {
@@ -87,6 +89,7 @@ class Board {
         this.bullets = new Set;
         this.roundStartTimestamp = Date.now();
         this.roundDuration = ROUND_DURATION;
+        this.roundResultDuration = ROUND_RESULT_DURATION;
     }
     serialize() {
         return {
@@ -94,6 +97,7 @@ class Board {
             height: this.height,
             roundStartTimestamp: this.roundStartTimestamp,
             roundDuration: this.roundDuration,
+            roundResultDuration: this.roundResultDuration,
             players: [...this.players.values()],
             bullets: [...this.bullets],
             walls: this.walls
