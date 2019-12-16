@@ -83,9 +83,8 @@ class Board {
     }
     drawTime() {
         this._context.fillStyle = '#fff';
-        const duration = (this.roundStartTimestamp + this.roundDuration - Date.now()) / 1000;
-        const formated = duration > 60 ? (duration / 60 | 0) + ' min' : (duration | 0) + ' sec';
-        this._context.fillText('Time left: ' + formated, this._canvas.width - 100, 20, 100);
+        const duration = new Date(1000 * Math.round((this.roundStartTimestamp + this.roundDuration - Date.now()) / 1000)); // round to nearest second
+        this._context.fillText('Time left: ' + duration.getUTCMinutes() + ':' + duration.getUTCSeconds().toString().padStart(2, '0'), this._canvas.width - 115, 20, 100);
     }
     drawScore(players) {
         this._context.fillStyle = '#fff';
