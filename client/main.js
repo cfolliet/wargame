@@ -1,69 +1,11 @@
 
 const canvas = document.getElementById('canvas');
-const board = new Board(canvas);
-let currentPlayerId = null;
-
-function fire() {
-    const bullet = board.createBullet(fireTarget);
-    webSocketServer.send({ type: 'create-bullet', value: fireTarget });
-}
-
-let fireInterval = null;
-let fireTarget = null;
-document.addEventListener('click', event => {
-    const rect = canvas.getBoundingClientRect();
-    fireTarget = { x: event.clientX - rect.left, y: event.clientY - rect.top };
-    fire();
-});
-document.addEventListener('mousemove', event => {
-    const rect = canvas.getBoundingClientRect();
-    fireTarget = { x: event.clientX - rect.left, y: event.clientY - rect.top };
-});
-document.addEventListener('mousedown', event => {
-    fireInterval = setInterval(fire, 300);
-});
-document.addEventListener('mouseup', event => {
-    clearInterval(fireInterval);
-});
-
-document.addEventListener("keydown", event => {
-    if (event.keyCode == 37 || event.keyCode == 81) {
-        webSocketServer.send({ type: 'move-player', value: { axis: 'x', direction: -1 } });
-        board.movePlayer('x', -1);
-    } else if (event.keyCode == 38 || event.keyCode == 90) {
-        webSocketServer.send({ type: 'move-player', value: { axis: 'y', direction: -1 } });
-        board.movePlayer('y', -1);
-    } else if (event.keyCode == 39 || event.keyCode == 68) {
-        webSocketServer.send({ type: 'move-player', value: { axis: 'x', direction: 1 } });
-        board.movePlayer('x', 1);
-    } else if (event.keyCode == 40 || event.keyCode == 83) {
-        webSocketServer.send({ type: 'move-player', value: { axis: 'y', direction: 1 } });
-        board.movePlayer('y', 1);
-    }
-});
-
-document.addEventListener("keyup", event => {
-    if (event.keyCode == 37 || event.keyCode == 81) {
-        webSocketServer.send({ type: 'move-player', value: { axis: 'x', direction: 0 } });
-        board.movePlayer('x', 0);
-    } else if (event.keyCode == 38 || event.keyCode == 90) {
-        webSocketServer.send({ type: 'move-player', value: { axis: 'y', direction: 0 } });
-        board.movePlayer('y', 0);
-    } else if (event.keyCode == 39 || event.keyCode == 68) {
-        webSocketServer.send({ type: 'move-player', value: { axis: 'x', direction: 0 } });
-        board.movePlayer('x', 0);
-    } else if (event.keyCode == 40 || event.keyCode == 83) {
-        webSocketServer.send({ type: 'move-player', value: { axis: 'y', direction: 0 } });
-        board.movePlayer('y', 0);
-    }
-});
-
-let serverConfig = null;
+let board = null;
 
 async function getServerConfig() {
     const response = await fetch('/config');
-    const data = await response.json();
-    return serverConfig = data;
+    const config = await response.json();
+    return config;
 }
 
 function getUserSettings() {
@@ -77,12 +19,24 @@ function getUserSettings() {
 }
 
 let webSocketServer = null;
-getServerConfig().then(() => {
-    const webSocketServerIp = `ws://${serverConfig.webSocketServerIp}:9000`;
-    webSocketServer = new WebSocketManager(webSocketServerIp, getUserSettings(), receive);
+getServerConfig().then( config => {
+    const webSocketServerIp = `ws://${config.webSocketServerIp}:9000`;
+    webSocketServer = new WebSocketManager(webSocketServerIp, onOpen, onReceive);
 });
 
-function receive(message) {
+function onOpen() {
+    board = new Board(canvas);
+    webSocketServer.send({ type: 'save-settings', value: getUserSettings() });
+
+    const actionHandler = new InGameActionHandler(board, webSocketServer);
+    actionHandler.registerListeners();
+
+    setInterval(() => {
+        webSocketServer.send({ type: 'ping', value: performance.now() });
+    }, 500);
+}
+
+function onReceive(message) {
     const data = JSON.parse(message);
 
     if (data.type != 'pong') console.log('msg', data);

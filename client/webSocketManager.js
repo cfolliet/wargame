@@ -1,12 +1,9 @@
 class WebSocketManager {
-    constructor(serverIp, userSettings, receiveCallback) {
+    constructor(serverIp, openCallback, receiveCallback) {
         this.conn = new WebSocket(serverIp);
 
         this.conn.addEventListener('open', event => {
-            this.send({ type: 'save-settings', value: userSettings });
-            setInterval(() => {
-                this.send({ type: 'ping', value: performance.now() });
-            }, 500);
+            openCallback();
         });
 
         this.conn.addEventListener('message', event => {
