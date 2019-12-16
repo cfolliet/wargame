@@ -67,18 +67,21 @@ class Board {
             this.walls.push(wall);
         });
     }
+    isRoundOn() {
+        return this.roundStartTimestamp + this.roundDuration > Date.now()
+    }
     update(dt) {
-        if (this.roundStartTimestamp + this.roundDuration > Date.now()) {
-            this.players.forEach(player => {
-                player.update(dt);
-                player.collide(this, dt);
-            }
-            );
-            this.bullets.forEach(bullet => {
-                bullet.update(dt);
-                bullet.collide(this)
-            });
-        } else if (this.roundStartTimestamp + this.roundDuration + this.roundResultDuration <= Date.now()) {
+        this.players.forEach(player => {
+            player.update(dt);
+            player.collide(this, dt);
+        }
+        );
+        this.bullets.forEach(bullet => {
+            bullet.update(dt);
+            bullet.collide(this)
+        });
+        
+        if (this.roundStartTimestamp + this.roundDuration + this.roundResultDuration <= Date.now()) {
             this.reset();
         }
     }
