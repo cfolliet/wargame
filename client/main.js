@@ -59,19 +59,28 @@ document.addEventListener("keyup", event => {
     }
 });
 
-const address = 'ws://localhost:9000';
-//const address = 'ws://' + window.location.hostname + ':9000';
-var conn = new WebSocket(address);
+let serverConfig = null;
 
-conn.addEventListener('open', event => {
-    loadSettings();
-    setInterval(() => {
-        send({ type: 'ping', value: performance.now() });
-    }, 500);
-});
+function getServerConfig() {
+    return fetch('/config').then(response => response.json()).then(data => serverConfig = data);
+}
 
-conn.addEventListener('message', event => {
-    receive(event.data);
+let conn = null;
+
+getServerConfig().then(() => {
+
+    conn = new WebSocket(`ws://${serverConfig.webSocketServerIp}:9000`);
+
+    conn.addEventListener('open', event => {
+        loadUserSettings();
+        setInterval(() => {
+            send({ type: 'ping', value: performance.now() });
+        }, 500);
+    });
+
+    conn.addEventListener('message', event => {
+        receive(event.data);
+    });
 });
 
 function receive(message) {
@@ -88,7 +97,7 @@ function receive(message) {
 
 function send(data) {
     const msg = JSON.stringify(data);
-    this.conn.send(msg);
+    conn.send(msg);
 }
 
 const settingsToggler = document.getElementById('settings-toggler');
@@ -116,7 +125,7 @@ saveSettings.addEventListener('click', () => {
     send(settings);
 });
 
-function loadSettings() {
+function loadUserSettings() {
     const stringSettings = localStorage.getItem('settings');
     if (stringSettings) {
         const settings = JSON.parse(stringSettings);
