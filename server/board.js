@@ -25,6 +25,7 @@ class Board {
 
         this.players = new Map;
         this.walls = [];
+        this.respawns = [];
 
         this.reset();
 
@@ -66,11 +67,17 @@ class Board {
         this.notifyChanges();
     }
     setMap(map) {
-        map.forEach(w => {
+        map.walls.forEach(w => {
             const wall = new Rect(w[2], w[3]);
             wall.pos.x = w[0];
             wall.pos.y = w[1];
             this.walls.push(wall);
+        });
+        map.respawns.forEach(r => {
+            const respawn = new Rect(r[2], r[3]);
+            respawn.pos.x = r[0];
+            respawn.pos.y = r[1];
+            this.respawns.push(respawn);
         });
     }
     isRoundOn() {
@@ -115,7 +122,8 @@ class Board {
             roundResultDuration: this.roundResultDuration,
             players: [...this.players.values()],
             bullets: [...this.bullets],
-            walls: this.walls
+            walls: this.walls,
+            respawns: this.respawns
         };
     }
 }

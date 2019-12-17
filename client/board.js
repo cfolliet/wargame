@@ -7,6 +7,7 @@ class Board {
         this.players = new Map;
         this.bullets = new Set;
         this.walls = [];
+        this.respawns = [];
 
         this.roundStartTimestamp = null;
         this.roundDuration = null;
@@ -50,11 +51,18 @@ class Board {
     }
     loadMap(map) {
         this.walls = [];
-        map.forEach(w => {
+        this.respawns = [];
+        map.walls.forEach(w => {
             const wall = new Rect(w.size.x, w.size.y);
             wall.pos.x = w.pos.x;
             wall.pos.y = w.pos.y;
             this.walls.push(wall);
+        });
+        map.respawns.forEach(r => {
+            const respawn = new Rect(r.size.x, r.size.y);
+            respawn.pos.x = r.pos.x;
+            respawn.pos.y = r.pos.y;
+            this.respawns.push(respawn);
         });
     }
     load(data) {
@@ -68,7 +76,7 @@ class Board {
         data.players.forEach(p => this.loadPlayer(p));
         this.bullets.clear();
         data.bullets.forEach(b => this.loadBullet(b));
-        this.loadMap(data.walls);
+        this.loadMap(data);
     }
     clear() {
         this._context.fillStyle = '#000';
@@ -114,6 +122,7 @@ class Board {
         this.players.forEach(player => this.drawRect(player, player.color, true));
         this.bullets.forEach(bullet => this.drawRect(bullet));
         this.walls.forEach(wall => this.drawRect(wall));
+        this.respawns.forEach(respawn => this.drawRect(respawn, 'violet'));
         this.drawScore(this.players);
         this.drawInfos();
     }
