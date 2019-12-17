@@ -28,6 +28,8 @@ class Board {
 
         this.reset();
 
+        this.onChange = null;
+
         let lastTime = null;
         this._frameCallback = (millis) => {
             if (lastTime !== null) {
@@ -44,20 +46,24 @@ class Board {
         player.pos.x = this.width * Math.random();
         player.pos.y = this.height / 2 * Math.random();
         this.players.set(player.id, player);
+        this.notifyChanges();
         return player;
     }
     removePlayer(playerId) {
         this.players.delete(playerId);
+        this.notifyChanges();
     }
     createBullet(playerId, vec) {
         const player = this.players.get(playerId);
         const vel = new Vec(vec.x - player.pos.x, vec.y - player.pos.y);
         const bullet = new Bullet(player, vel);
         this.bullets.add(bullet);
+        this.notifyChanges();
         return bullet;
     }
     movePlayer(playerId, axis, direction) {
         this.players.get(playerId).vel[axis] = direction;
+        this.notifyChanges();
     }
     setMap(map) {
         map.forEach(w => {
@@ -80,7 +86,7 @@ class Board {
             bullet.update(dt);
             bullet.collide(this)
         });
-        
+
         if (this.roundStartTimestamp + this.roundDuration + this.roundResultDuration <= Date.now()) {
             this.reset();
         }
@@ -93,6 +99,12 @@ class Board {
         this.roundStartTimestamp = Date.now();
         this.roundDuration = ROUND_DURATION;
         this.roundResultDuration = ROUND_RESULT_DURATION;
+        this.notifyChanges();
+    }
+    notifyChanges() {
+        if (this.onChange) {
+            this.onChange();
+        }
     }
     serialize() {
         return {
