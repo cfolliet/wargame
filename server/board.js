@@ -44,8 +44,12 @@ class Board {
     }
     createPlayer(name) {
         const player = new Player(createId(), name);
-        player.pos.x = this.width * Math.random();
-        player.pos.y = this.height / 2 * Math.random();
+        do {
+            const respawn = this.respawns[Math.random() * this.respawns.length | 0];
+            player.pos.x = respawn.pos.x + (Math.random() * respawn.size.x | 0);
+            player.pos.y = respawn.pos.y + (Math.random() * respawn.size.y | 0);
+        } while (player.collide(this, 0));
+
         this.players.set(player.id, player);
         this.notifyChanges();
         return player;

@@ -110,6 +110,12 @@ class Board {
             this._context.fillText(player.name + ': ' + player.score, this._canvas.width - 100, 40 + index * 20, 100);
         });
     }
+    drawRespawns() {
+        this.respawns.forEach(respawn => {
+            this._context.fillStyle = 'violet';
+            this._context.fillRect(respawn.pos.x, respawn.pos.y, respawn.size.x, respawn.size.y);
+        });
+    }
     drawInfos() {
         this._context.fillStyle = '#fff';
         this._context.fillText('FPS: ' + this.fps, 20, 20);
@@ -117,12 +123,13 @@ class Board {
     }
     draw() {
         this.clear();
-
+        if (false) {
+            this.drawRespawns();
+        }
         this.drawTime();
         this.players.forEach(player => this.drawRect(player, player.color, true));
         this.bullets.forEach(bullet => this.drawRect(bullet));
         this.walls.forEach(wall => this.drawRect(wall));
-        this.respawns.forEach(respawn => this.drawRect(respawn, 'violet'));
         this.drawScore(this.players);
         this.drawInfos();
     }

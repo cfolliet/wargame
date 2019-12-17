@@ -32,18 +32,23 @@ class Player extends Rect {
             || this.top < 0 || this.bottom > height) {
             this.pos.x -= vel.x * dt;
             this.pos.y -= vel.y * dt;
-        } else {
-            objects.forEach(object => {
-                // todo => use for loop to break at the first collide
-                if (object !== this) {
-                    if (object.left < this.right && object.right > this.left &&
-                        object.top < this.bottom && object.bottom > this.top) {
-                        this.pos.x -= vel.x * dt;
-                        this.pos.y -= vel.y * dt;
-                    }
-                }
-            });
+            return true;
         }
+
+        let collide = false;
+        objects.forEach(object => {
+            // todo => use for loop to break at the first collide
+            if (object !== this) {
+                if (object.left < this.right && object.right > this.left &&
+                    object.top < this.bottom && object.bottom > this.top) {
+                    this.pos.x -= vel.x * dt;
+                    this.pos.y -= vel.y * dt;
+                    collide = true;
+                }
+            }
+        });
+
+        return collide;
     }
 }
 
