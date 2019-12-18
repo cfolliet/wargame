@@ -25,6 +25,7 @@ class Board {
 
         this.players = new Map;
         this.walls = [];
+        this.respawns = [];
 
         this.reset();
 
@@ -43,8 +44,12 @@ class Board {
     }
     createPlayer(name) {
         const player = new Player(createId(), name);
-        player.pos.x = this.width * Math.random();
-        player.pos.y = this.height / 2 * Math.random();
+        do {
+            const respawn = this.respawns[Math.random() * this.respawns.length | 0];
+            player.pos.x = respawn.pos.x + (Math.random() * respawn.size.x | 0);
+            player.pos.y = respawn.pos.y + (Math.random() * respawn.size.y | 0);
+        } while (player.collide(this, 0));
+
         this.players.set(player.id, player);
         this.notifyChanges();
         return player;
@@ -66,11 +71,17 @@ class Board {
         this.notifyChanges();
     }
     setMap(map) {
-        map.forEach(w => {
+        map.walls.forEach(w => {
             const wall = new Rect(w[2], w[3]);
             wall.pos.x = w[0];
             wall.pos.y = w[1];
             this.walls.push(wall);
+        });
+        map.respawns.forEach(r => {
+            const respawn = new Rect(r[2], r[3]);
+            respawn.pos.x = r[0];
+            respawn.pos.y = r[1];
+            this.respawns.push(respawn);
         });
     }
     isRoundOn() {
@@ -115,7 +126,8 @@ class Board {
             roundResultDuration: this.roundResultDuration,
             players: [...this.players.values()],
             bullets: [...this.bullets],
-            walls: this.walls
+            walls: this.walls,
+            respawns: this.respawns
         };
     }
 }

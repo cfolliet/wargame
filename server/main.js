@@ -2,10 +2,18 @@ const WebSocket = require('ws');
 const Board = require('./board.js');
 
 //x, y, w, h
-const defaultMap = [
-    [100, 50, 100, 20],
-    [100, 200, 20, 100],
-];
+const defaultMap = {
+    walls: [
+        [100, 50, 100, 20],
+        [100, 200, 20, 100],
+    ],
+    respawns : [
+        [0, 0, 50, 300],
+        [250, 0 ,50, 300],
+        [0, 0, 300, 50],
+        [0, 250 ,300, 50],
+    ]
+};
 
 const board = new Board;
 board.setMap(defaultMap);
