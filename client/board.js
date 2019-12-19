@@ -9,6 +9,9 @@ class Board {
         this.walls = [];
         this.respawns = [];
 
+        this.serverTimestamp = null;
+        this.localServerTimestampDiff = 0;
+
         this.roundStartTimestamp = null;
         this.roundDuration = null;
 
@@ -72,6 +75,8 @@ class Board {
         this.roundDuration = data.roundDuration;
         this.roundResultDuration = data.roundResultDuration;
         this.currentPlayerId = data.currentPlayerId;
+        this.serverTimestamp = data.serverTimestamp;
+        this.localServerTimestampDiff = this.serverTimestamp - Date.now();
         this.players.clear();
         data.players.forEach(p => this.loadPlayer(p));
         this.bullets.clear();
@@ -93,10 +98,10 @@ class Board {
     drawTime() {
         this._context.fillStyle = '#fff';
         if (this.roundStartTimestamp + this.roundDuration > Date.now()) {
-            const roundDuration = new Date(1000 * Math.round((this.roundStartTimestamp + this.roundDuration - Date.now()) / 1000)); // round to nearest second
+            const roundDuration = new Date(1000 * Math.round((this.roundStartTimestamp + this.roundDuration - Date.now() + this.localServerTimestampDiff) / 1000)); // round to nearest second
             this._context.fillText('Time left: ' + roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0'), this._canvas.width - 115, 20, 100);
         } else {
-            const waitDuration = new Date(1000 * Math.round((this.roundStartTimestamp + this.roundDuration + this.roundResultDuration - Date.now()) / 1000)); // round to nearest second
+            const waitDuration = new Date(1000 * Math.round((this.roundStartTimestamp + this.roundDuration + this.roundResultDuration - Date.now() + this.localServerTimestampDiff) / 1000)); // round to nearest second
             this._context.fillText('New round in: ' + waitDuration.getUTCMinutes() + ':' + waitDuration.getUTCSeconds().toString().padStart(2, '0'), this._canvas.width - 115, 20, 100);
         }
     }

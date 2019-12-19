@@ -48,6 +48,7 @@ class Client {
     send(data) {
         if (typeof data.value === 'object') {
             data.value.currentPlayerId = this.playerId;
+            data.value.serverTimestamp = Date.now();
         }
         const msg = JSON.stringify(data);
         this.conn.send(msg);
@@ -71,7 +72,6 @@ class Client {
         } else if (data.type == 'move-player') {
             this.board.movePlayer(this.playerId, data.value.axis, data.value.direction);
         } else if (data.type == 'save-settings') {
-            console.log(data)
             if (data.value && data.value.name) {
                 this.board.players.get(this.playerId).name = data.value.name;
             }
