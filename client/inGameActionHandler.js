@@ -46,12 +46,12 @@ class InGameActionHandler {
 
         document.addEventListener('click', event => {
             const rect = canvas.getBoundingClientRect();
-            this.fireTarget = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+            this.fireTarget = { x: (event.clientX - rect.left) / this.board.scale, y: (event.clientY - rect.top) / this.board.scale };
             fire();
         });
         document.addEventListener('mousemove', event => {
             const rect = canvas.getBoundingClientRect();
-            this.fireTarget = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+            this.fireTarget = { x: (event.clientX - rect.left) / this.board.scale, y: (event.clientY - rect.top) / this.board.scale };
         });
         document.addEventListener('mousedown', event => {
             this.fireInterval = setInterval(fire, 300);
