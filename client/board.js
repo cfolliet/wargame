@@ -116,7 +116,7 @@ class Board {
             this._context.fillRect(this._canvas.width / this.scale - 115, 32 + index * 20, 10, 10);
             this._context.strokeStyle = '#fff';
             this._context.strokeRect(this._canvas.width / this.scale - 115, 32 + index * 20, 10, 10);
-            this._context.fillText(player.name + ': ' + player.kills, this._canvas.width / this.scale - 100, 40 + index * 20, 100);
+            this._context.fillText(`${player.name}: ${player.kills}/${player.deaths}`, this._canvas.width / this.scale - 100, 40 + index * 20, 100);
         });
     }
     drawRespawns() {
