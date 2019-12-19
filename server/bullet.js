@@ -1,6 +1,8 @@
 const Rect = require('./rect.js');
 const Vec = require('./vec.js');
 
+const BULLET_POWER = 35;
+
 class Bullet extends Rect {
     constructor(player, vel) {
         super(2, 2);
@@ -8,6 +10,7 @@ class Bullet extends Rect {
         this.player = player;
         this.pos.x = player.pos.x;
         this.pos.y = player.pos.y;
+        this.power = BULLET_POWER;
     }
     update(dt) {
         const vel = new Vec(this.vel.x, this.vel.y);
@@ -41,7 +44,7 @@ class Bullet extends Rect {
                     player.top < this.bottom && player.bottom > this.top) {
                     bullets.delete(this);
                     if (game.isRoundOn()) {
-                        this.player.score++;
+                        player.hit(this);
                     }
                 }
             });

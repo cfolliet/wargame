@@ -2,7 +2,8 @@ class Player extends Rect {
     constructor(name = '') {
         super(10, 10);
         this.vel = new Vec;
-        this.score = 0;
+        this.kills = 0;
+        this.deaths = 0;
         this.name = name;
         this.color =  'grey';
     }

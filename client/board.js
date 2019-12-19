@@ -102,12 +102,12 @@ class Board {
     }
     drawScore(players) {
         this._context.fillStyle = '#fff';
-        [...players.values()].sort((a, b) => b.score - a.score).forEach((player, index) => {
+        [...players.values()].sort((a, b) => b.kills - a.kills).forEach((player, index) => {
             this._context.fillStyle = player.color;
             this._context.fillRect(this._canvas.width - 115, 32 + index * 20, 10, 10);
             this._context.strokeStyle = '#fff';
             this._context.strokeRect(this._canvas.width - 115, 32 + index * 20, 10, 10);
-            this._context.fillText(player.name + ': ' + player.score, this._canvas.width - 100, 40 + index * 20, 100);
+            this._context.fillText(player.name + ': ' + player.kills, this._canvas.width - 100, 40 + index * 20, 100);
         });
     }
     drawRespawns() {

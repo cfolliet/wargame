@@ -43,15 +43,8 @@ class Board {
         requestAnimationFrame(this._frameCallback);
     }
     createPlayer(name) {
-        const player = new Player(createId(), name);
-        do {
-            const respawn = this.respawns[Math.random() * this.respawns.length | 0];
-            player.pos.x = respawn.pos.x + (Math.random() * respawn.size.x | 0);
-            player.pos.y = respawn.pos.y + (Math.random() * respawn.size.y | 0);
-        } while (player.collide(this, 0));
-
+        const player = new Player(createId(), this, name);
         this.players.set(player.id, player);
-        this.notifyChanges();
         return player;
     }
     removePlayer(playerId) {
@@ -104,7 +97,8 @@ class Board {
     }
     reset() {
         this.players.forEach(player => {
-            player.score = 0;
+            player.kills = 0;
+            player.deaths = 0;
         });
         this.bullets = new Set;
         this.roundStartTimestamp = Date.now();
