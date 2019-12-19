@@ -1,5 +1,8 @@
+const BOARD_SCALE = 1.5;
+
 class Board {
     constructor(canvas) {
+        this.scale = BOARD_SCALE;
         this._canvas = canvas;
         this._context = canvas.getContext('2d');
 
@@ -8,6 +11,9 @@ class Board {
         this.bullets = new Set;
         this.walls = [];
         this.respawns = [];
+
+        this.serverTimestamp = null;
+        this.localServerTimestampDiff = 0;
 
         this.roundStartTimestamp = null;
         this.roundDuration = null;
@@ -66,12 +72,15 @@ class Board {
         });
     }
     load(data) {
-        this._canvas.width = data.width;
-        this._canvas.height = data.height;
+        this._canvas.width = data.width * this.scale;
+        this._canvas.height = data.height * this.scale;
+        this._context.scale(this.scale, this.scale);
         this.roundStartTimestamp = data.roundStartTimestamp;
         this.roundDuration = data.roundDuration;
         this.roundResultDuration = data.roundResultDuration;
         this.currentPlayerId = data.currentPlayerId;
+        this.serverTimestamp = data.serverTimestamp;
+        this.localServerTimestampDiff = this.serverTimestamp - Date.now();
         this.players.clear();
         data.players.forEach(p => this.loadPlayer(p));
         this.bullets.clear();
@@ -93,21 +102,21 @@ class Board {
     drawTime() {
         this._context.fillStyle = '#fff';
         if (this.roundStartTimestamp + this.roundDuration > Date.now()) {
-            const roundDuration = new Date(1000 * Math.round((this.roundStartTimestamp + this.roundDuration - Date.now()) / 1000)); // round to nearest second
-            this._context.fillText('Time left: ' + roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0'), this._canvas.width - 115, 20, 100);
+            const roundDuration = new Date(1000 * Math.round((this.roundStartTimestamp + this.roundDuration - Date.now() + this.localServerTimestampDiff) / 1000)); // round to nearest second
+            this._context.fillText('Time left: ' + roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0'), this._canvas.width / this.scale - 115, 20, 100);
         } else {
-            const waitDuration = new Date(1000 * Math.round((this.roundStartTimestamp + this.roundDuration + this.roundResultDuration - Date.now()) / 1000)); // round to nearest second
-            this._context.fillText('New round in: ' + waitDuration.getUTCMinutes() + ':' + waitDuration.getUTCSeconds().toString().padStart(2, '0'), this._canvas.width - 115, 20, 100);
+            const waitDuration = new Date(1000 * Math.round((this.roundStartTimestamp + this.roundDuration + this.roundResultDuration - Date.now() + this.localServerTimestampDiff) / 1000)); // round to nearest second
+            this._context.fillText('New round in: ' + waitDuration.getUTCMinutes() + ':' + waitDuration.getUTCSeconds().toString().padStart(2, '0'), this._canvas.width / 3 / this.scale, this._canvas.width / 2 / this.scale, 100);
         }
     }
     drawScore(players) {
         this._context.fillStyle = '#fff';
-        [...players.values()].sort((a, b) => b.score - a.score).forEach((player, index) => {
+        [...players.values()].sort((a, b) => b.kills - a.kills).forEach((player, index) => {
             this._context.fillStyle = player.color;
-            this._context.fillRect(this._canvas.width - 115, 32 + index * 20, 10, 10);
+            this._context.fillRect(this._canvas.width / this.scale - 115, 32 + index * 20, 10, 10);
             this._context.strokeStyle = '#fff';
-            this._context.strokeRect(this._canvas.width - 115, 32 + index * 20, 10, 10);
-            this._context.fillText(player.name + ': ' + player.score, this._canvas.width - 100, 40 + index * 20, 100);
+            this._context.strokeRect(this._canvas.width / this.scale - 115, 32 + index * 20, 10, 10);
+            this._context.fillText(`${player.name}: ${player.kills}/${player.deaths}`, this._canvas.width / this.scale - 100, 40 + index * 20, 100);
         });
     }
     drawRespawns() {
@@ -121,17 +130,22 @@ class Board {
         this._context.fillText('FPS: ' + this.fps, 20, 20);
         this._context.fillText('Ping: ' + this.ping, 20, 35);
     }
+    drawHealth(){
+        this._context.fillStyle = '#fff';
+        this._context.fillText('\u2764 ' + this.currentPlayer().health, 20, this._canvas.height / this.scale - 20);
+    }
     draw() {
         this.clear();
         if (false) {
             this.drawRespawns();
         }
-        this.drawTime();
         this.players.forEach(player => this.drawRect(player, player.color, true));
         this.bullets.forEach(bullet => this.drawRect(bullet));
         this.walls.forEach(wall => this.drawRect(wall));
         this.drawScore(this.players);
         this.drawInfos();
+        this.drawHealth();
+        this.drawTime();
     }
     update(dt) {
         this.players.forEach(player => {

@@ -36,7 +36,7 @@ class Bullet extends Rect {
                     player.left < this.right && player.right > this.left &&
                     player.top < this.bottom && player.bottom > this.top) {
                     bullets.delete(this);
-                    this.player.score++;
+                    this.player.kills++;
                 }
             });
         }

@@ -2,13 +2,18 @@ const Rect = require('./rect.js');
 const Vec = require('./vec.js');
 
 class Player extends Rect {
-    constructor(id, name = '') {
+    constructor(id, board, name = '') {
         super(10, 10);
+        this.board = board;
         this.id = id;
         this.vel = new Vec;
-        this.score = 0;
+        this.kills = 0;
         this.name = name;
         this.color = '#' + (Math.random() * 16777215 | 0).toString(16);
+        this.health = null;
+        this.deaths = 0;
+
+        this.spawn();
     }
     update(dt) {
         const vel = new Vec(this.vel.x, this.vel.y);
@@ -49,6 +54,23 @@ class Player extends Rect {
         });
 
         return collide;
+    }
+    hit(bullet) {
+        this.health -= bullet.power;
+        if (this.health <= 0) {
+            bullet.player.kills++;
+            this.deaths++;
+            this.spawn();
+        }
+    }
+    spawn() {
+        this.health = 100;
+        do {
+            const respawn = this.board.respawns[Math.random() * this.board.respawns.length | 0];
+            this.pos.x = respawn.pos.x + (Math.random() * respawn.size.x | 0);
+            this.pos.y = respawn.pos.y + (Math.random() * respawn.size.y | 0);
+        } while (this.collide(this.board, 0));
+        this.board.notifyChanges();
     }
 }
 
