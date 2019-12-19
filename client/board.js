@@ -128,7 +128,7 @@ class Board {
     drawInfos() {
         this._context.fillStyle = '#fff';
         this._context.fillText('FPS: ' + this.fps, 20, 20);
-        this._context.fillText('Ping: ' + this.ping, 20, 35);
+        this._context.fillText('Ping: ' + (this.ping | 0), 20, 35);
     }
     drawHealth(){
         this._context.fillStyle = '#fff';
