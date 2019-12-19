@@ -106,7 +106,7 @@ class Board {
             this._context.fillText('Time left: ' + roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0'), this._canvas.width / this.scale - 115, 20, 100);
         } else {
             const waitDuration = new Date(1000 * Math.round((this.roundStartTimestamp + this.roundDuration + this.roundResultDuration - Date.now() + this.localServerTimestampDiff) / 1000)); // round to nearest second
-            this._context.fillText('New round in: ' + waitDuration.getUTCMinutes() + ':' + waitDuration.getUTCSeconds().toString().padStart(2, '0'), this._canvas.width / this.scale - 115, 20, 100);
+            this._context.fillText('New round in: ' + waitDuration.getUTCMinutes() + ':' + waitDuration.getUTCSeconds().toString().padStart(2, '0'), this._canvas.width / 3 / this.scale, this._canvas.width / 2 / this.scale, 100);
         }
     }
     drawScore(players) {
@@ -130,17 +130,22 @@ class Board {
         this._context.fillText('FPS: ' + this.fps, 20, 20);
         this._context.fillText('Ping: ' + this.ping, 20, 35);
     }
+    drawHealth(){
+        this._context.fillStyle = '#fff';
+        this._context.fillText('\u2764 ' + this.currentPlayer().health, 20, this._canvas.height / this.scale - 20);
+    }
     draw() {
         this.clear();
         if (false) {
             this.drawRespawns();
         }
-        this.drawTime();
         this.players.forEach(player => this.drawRect(player, player.color, true));
         this.bullets.forEach(bullet => this.drawRect(bullet));
         this.walls.forEach(wall => this.drawRect(wall));
         this.drawScore(this.players);
         this.drawInfos();
+        this.drawHealth();
+        this.drawTime();
     }
     update(dt) {
         this.players.forEach(player => {
