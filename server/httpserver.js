@@ -12,9 +12,14 @@ const getLocalExternalIP = () => [].concat(...Object.values(networkInterfaces())
 function start() {
     http.createServer(function (req, res) {
         if (req.url.match("\.js$")) {
+            let scriptPath = path.join(CLIENT_DIR, req.url);
+            let fileStream = fs.createReadStream(scriptPath);
+            res.writeHead(200, { "Content-Type": "application/javascript" });
+            fileStream.pipe(res);
+        } else if (req.url.match("\.png$")) {
             let imagePath = path.join(CLIENT_DIR, req.url);
             let fileStream = fs.createReadStream(imagePath);
-            res.writeHead(200, { "Content-Type": "application/javascript" });
+            res.writeHead(200, { "Content-Type": "image/png" });
             fileStream.pipe(res);
         } else if (req.url === '/config') {
             res.writeHead(200, { 'Content-Type': 'application/json' });

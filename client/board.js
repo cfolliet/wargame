@@ -1,4 +1,4 @@
-const BOARD_SCALE = 1.5;
+const BOARD_SCALE = 1;
 
 class Board {
     constructor(canvas) {
@@ -88,8 +88,10 @@ class Board {
         this.loadMap(data);
     }
     clear() {
-        this._context.fillStyle = '#000';
-        this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
+        //this._context.fillStyle = '#000';
+        //this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
+        var image = document.getElementById('background-image');
+        this._context.drawImage(image, 0, 0);
     }
     drawRect(rect, color = '#fff', stroke) {
         this._context.fillStyle = color;
@@ -130,18 +132,18 @@ class Board {
         this._context.fillText('FPS: ' + this.fps, 20, 20);
         this._context.fillText('Ping: ' + (this.ping | 0), 20, 35);
     }
-    drawHealth(){
-        this._context.fillStyle = '#fff';
-        this._context.fillText('\u2764 ' + this.currentPlayer().health, 20, this._canvas.height / this.scale - 20);
+    drawHealth() {
+        if (this.currentPlayer()) {
+            this._context.fillStyle = '#fff';
+            this._context.fillText('\u2764 ' + this.currentPlayer().health, 20, this._canvas.height / this.scale - 20);
+        }
     }
     draw() {
         this.clear();
-        if (false) {
-            this.drawRespawns();
-        }
+        //this.drawRespawns();
         this.players.forEach(player => this.drawRect(player, player.color, true));
         this.bullets.forEach(bullet => this.drawRect(bullet));
-        this.walls.forEach(wall => this.drawRect(wall));
+        //this.walls.forEach(wall => this.drawRect(wall));
         this.drawScore(this.players);
         this.drawInfos();
         this.drawHealth();

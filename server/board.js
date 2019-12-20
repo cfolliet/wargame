@@ -20,8 +20,8 @@ function createId(len = 6, chars = 'abcdefghijklmnopqrstuvwxyz01234567890') {
 
 class Board {
     constructor() {
-        this.width = 300;
-        this.height = 300;
+        this.width = 0;
+        this.height = 0;
 
         this.players = new Map;
         this.walls = [];
@@ -63,7 +63,9 @@ class Board {
         this.players.get(playerId).vel[axis] = direction;
         this.notifyChanges();
     }
-    setMap(map) {
+    setMap(map) {        
+        this.width = map.width;
+        this.height = map.height;
         map.walls.forEach(w => {
             const wall = new Rect(w[2], w[3]);
             wall.pos.x = w[0];
