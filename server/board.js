@@ -1,7 +1,5 @@
 const Player = require('./player.js');
-const Bullet = require('./bullet.js');
 const Rect = require('./rect.js');
-const Vec = require('./vec.js');
 
 const ROUND_DURATION = 1000 * 30;
 const ROUND_RESULT_DURATION = 1000 * 10;
@@ -51,19 +49,20 @@ class Board {
         this.players.delete(playerId);
         this.notifyChanges();
     }
-    createBullet(playerId, vec) {
+    fire(playerId, target) {
         const player = this.players.get(playerId);
-        const vel = new Vec(vec.x - player.pos.x, vec.y - player.pos.y);
-        const bullet = new Bullet(player, vel);
-        this.bullets.add(bullet);
-        this.notifyChanges();
+        const bullet = player.fire(target);
+        if (bullet) {
+            this.bullets.add(bullet);
+            this.notifyChanges();
+        }
         return bullet;
     }
     movePlayer(playerId, axis, direction) {
         this.players.get(playerId).vel[axis] = direction;
         this.notifyChanges();
     }
-    setMap(map) {        
+    setMap(map) {
         this.width = map.width;
         this.height = map.height;
         map.walls.forEach(w => {

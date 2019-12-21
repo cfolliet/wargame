@@ -83,8 +83,8 @@ class Client {
 
         if (data.type != 'ping') console.log('received', data);
 
-        if (data.type == 'create-bullet') {
-            this.board.createBullet(this.playerId, data.value);
+        if (data.type == 'fire') {
+            this.board.fire(this.playerId, data.value);
         } else if (data.type == 'move-player') {
             this.board.movePlayer(this.playerId, data.value.axis, data.value.direction);
         } else if (data.type == 'save-settings') {

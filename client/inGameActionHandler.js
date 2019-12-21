@@ -40,8 +40,8 @@ class InGameActionHandler {
         });
 
         const fire = () => {
-            const bullet = this.board.createBullet(this.fireTarget);
-            this.webSocketServer.send({ type: 'create-bullet', value: this.fireTarget });
+            //const bullet = this.board.createBullet(this.fireTarget);
+            this.webSocketServer.send({ type: 'fire', value: this.fireTarget });
         }
 
         document.addEventListener('click', event => {
