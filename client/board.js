@@ -138,6 +138,13 @@ class Board {
             this._context.fillText('\u2764 ' + this.currentPlayer().health, 20, this._canvas.height / this.scale - 20);
         }
     }
+    drawWeapon(){        
+        if (this.currentPlayer()) {
+            this._context.fillStyle = '#fff';
+            const weapon = this.currentPlayer().weapon;
+            this._context.fillText(`${weapon.name}: ${weapon.bulletCount}/${weapon.maxBulletCount}`, 100, this._canvas.height / this.scale - 20);
+        }
+    }
     draw() {
         this.clear();
         //this.drawRespawns();
@@ -147,6 +154,7 @@ class Board {
         this.drawScore(this.players);
         this.drawInfos();
         this.drawHealth();
+        this.drawWeapon();
         this.drawTime();
     }
     update(dt) {

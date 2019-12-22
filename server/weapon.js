@@ -1,5 +1,6 @@
 class Weapon {
     constructor(options) {
+        this.name = options.name;
         this.range = options.range;
         this.bulletCount = options.bulletCount;
         this.maxBulletCount = options.maxBulletCount;
@@ -26,19 +27,15 @@ class Weapon {
     }
     fire() {
         if (this.isLoading) {
-            console.log('isLoading')
             return false;
         }
         if (this.isReloading) {
-            console.log('isReloading')
             return false;
         }
         if (this.isEmpty()) {
-            console.log('isEmpty')
             this.reload();
             return false;
         }
-        console.log('go')
         this.bulletCount--;
         this.load();
         return true;

@@ -4,6 +4,7 @@ const Bullet = require('./bullet.js');
 class Pistol extends Weapon {
     constructor() {
         super({
+            name: 'pistol',
             range: 13000,
             bulletCount: 15,
             maxBulletCount: 15,
