@@ -2,6 +2,7 @@ const Rect = require('./rect.js');
 const Vec = require('./vec.js');
 const Pistol = require('./pistol.js');
 const Machinegun = require('./machinegun.js');
+const Shotgun = require('./shotgun.js');
 
 class Player extends Rect {
     constructor(id, board, name = '') {
@@ -14,7 +15,7 @@ class Player extends Rect {
         this.color = '#' + (Math.random() * 16777215 | 0).toString(16);
         this.health = null;
         this.deaths = 0;
-        this.weapons = [new Pistol(), new Machinegun()];
+        this.weapons = [new Pistol(), new Machinegun(), new Shotgun()];
         this.currentWeaponIndex = 0;
 
         this.spawn();

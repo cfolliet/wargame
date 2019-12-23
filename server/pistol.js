@@ -16,7 +16,7 @@ class Pistol extends Weapon {
     fire(player, vel) {
         const fire = super.fire();
         if (fire) {
-            return new Bullet(player, vel);
+            return [new Bullet(player, vel)];
         }
         return null;
     }

@@ -51,19 +51,19 @@ class Board {
     }
     fire(playerId, target) {
         const player = this.players.get(playerId);
-        const bullet = player.fire(target);
-        if (bullet) {
-            this.bullets.add(bullet);
+        const bullets = player.fire(target);
+        if (bullets) {
+            bullets.forEach(b => this.bullets.add(b));
         }
         this.notifyChanges();
-        return bullet;
+        return bullets;
     }
-    reload(playerId){        
+    reload(playerId) {
         const player = this.players.get(playerId);
         player.reload();
         this.notifyChanges();
     }
-    changeWeapon(playerId, newIndex){            
+    changeWeapon(playerId, newIndex) {
         const player = this.players.get(playerId);
         player.changeWeapon(newIndex);
         this.notifyChanges();
