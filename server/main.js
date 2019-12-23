@@ -93,8 +93,10 @@ class Client {
             }
             this.broadcast({ type: 'update-board', value: board.serialize() });
             this.send({ type: 'update-board', value: board.serialize() });
-        } else if (data.type == 'reload-gun') {
+        } else if (data.type == 'reload-weapon') {
             this.board.reload(this.playerId);
+        } else if (data.type == 'change-weapon') {
+            this.board.changeWeapon(this.playerId, data.value);
         } else if (data.type == 'ping') {
             this.send({ type: 'pong', value: data.value });
         }

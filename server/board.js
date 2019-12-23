@@ -54,13 +54,19 @@ class Board {
         const bullet = player.fire(target);
         if (bullet) {
             this.bullets.add(bullet);
-            this.notifyChanges();
         }
+        this.notifyChanges();
         return bullet;
     }
     reload(playerId){        
         const player = this.players.get(playerId);
         player.reload();
+        this.notifyChanges();
+    }
+    changeWeapon(playerId, newIndex){            
+        const player = this.players.get(playerId);
+        player.changeWeapon(newIndex);
+        this.notifyChanges();
     }
     movePlayer(playerId, axis, direction) {
         this.players.get(playerId).vel[axis] = direction;

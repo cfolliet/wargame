@@ -141,7 +141,8 @@ class Board {
     drawWeapon() {
         if (this.currentPlayer()) {
             this._context.fillStyle = '#fff';
-            const weapon = this.currentPlayer().weapon;
+            const player = this.currentPlayer();
+            const weapon = player.weapons[player.currentWeaponIndex];
             if (weapon.isReloading) {
                 this._context.fillText(`${weapon.name}: RELOADING...`, 100, this._canvas.height / this.scale - 20);
             } else {

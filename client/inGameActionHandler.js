@@ -21,7 +21,11 @@ class InGameActionHandler {
                 this.webSocketServer.send({ type: 'move-player', value: { axis: 'y', direction: 1 } });
                 this.board.movePlayer('y', 1);
             } else if (event.keyCode == 82) {
-                this.webSocketServer.send({ type: 'reload-gun' });
+                this.webSocketServer.send({ type: 'reload-weapon' });
+            } else if (event.keyCode == 69) {
+                const currentPlayer = this.board.currentPlayer();
+                const nextWeaponIndex = (currentPlayer.currentWeaponIndex + 1) % currentPlayer.weapons.length;
+                this.webSocketServer.send({ type: 'change-weapon', value: nextWeaponIndex });
             }
         });
 
