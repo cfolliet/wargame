@@ -23,11 +23,11 @@ const defaultMap = {
         [450, 570, 115, 65],
         [690, 585, 70, 35]
     ],
-    respawns : [
+    respawns: [
         [0, 0, 50, 600],
-        [750, 0 ,50, 800],
+        [750, 0, 50, 800],
         [0, 0, 800, 50],
-        [0, 550 ,800, 50],
+        [0, 550, 800, 50],
     ]
 };
 
@@ -93,6 +93,8 @@ class Client {
             }
             this.broadcast({ type: 'update-board', value: board.serialize() });
             this.send({ type: 'update-board', value: board.serialize() });
+        } else if (data.type == 'reload-gun') {
+            this.board.reload(this.playerId);
         } else if (data.type == 'ping') {
             this.send({ type: 'pong', value: data.value });
         }

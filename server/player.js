@@ -61,6 +61,9 @@ class Player extends Rect {
         const vel = new Vec(target.x - this.pos.x, target.y - this.pos.y);
         return this.weapon.fire(this, vel);
     }
+    reload(){
+        this.weapon.reload();
+    }
     hit(bullet) {
         this.health -= bullet.power;
         if (this.health <= 0) {

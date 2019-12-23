@@ -20,6 +20,8 @@ class InGameActionHandler {
             } else if (event.keyCode == 40 || event.keyCode == 83) {
                 this.webSocketServer.send({ type: 'move-player', value: { axis: 'y', direction: 1 } });
                 this.board.movePlayer('y', 1);
+            } else if (event.keyCode == 82) {
+                this.webSocketServer.send({ type: 'reload-gun' });
             }
         });
 

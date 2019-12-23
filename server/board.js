@@ -58,6 +58,10 @@ class Board {
         }
         return bullet;
     }
+    reload(playerId){        
+        const player = this.players.get(playerId);
+        player.reload();
+    }
     movePlayer(playerId, axis, direction) {
         this.players.get(playerId).vel[axis] = direction;
         this.notifyChanges();
