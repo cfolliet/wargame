@@ -17,12 +17,13 @@ class Shotgun extends Weapon {
     fire(player, vel) {
         const fire = super.fire();
         if (fire) {
+            vel.len = 2000;
             const bullets = [
                 new Bullet(player, vel)
             ];
 
             for (let index = -5; index < 6; index++) {
-                const newVel = new Vec(vel.x + index * 2, vel.y + index * 2);
+                const newVel = new Vec(vel.x + index * 15, vel.y + index * 15);
                 bullets.push(new Bullet(player, newVel))                
             }
             return bullets;

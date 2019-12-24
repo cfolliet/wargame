@@ -9,7 +9,7 @@ class Bullet extends Rect {
     update(dt) {
         const vel = new Vec(this.vel.x, this.vel.y);
         if (vel.len) {
-            vel.len = 500;
+            vel.len = 2000;
         }
         this.pos.x += vel.x * dt;
         this.pos.y += vel.y * dt;
