@@ -1,4 +1,5 @@
 const Player = require('./player.js');
+const Zombie = require('./zombie.js');
 const Rect = require('./rect.js');
 
 const ROUND_DURATION = 1000 * 30;
@@ -17,13 +18,17 @@ function createId(len = 6, chars = 'abcdefghijklmnopqrstuvwxyz01234567890') {
 }
 
 class Board {
-    constructor() {
+    constructor(map, zombieCount) {
         this.width = 0;
         this.height = 0;
 
         this.players = new Map;
+        this.startZombieCount = zombieCount;
+        this.zombies = new Map;
         this.walls = [];
         this.respawns = [];
+
+        this.setMap(map);
 
         this.reset();
 
@@ -49,6 +54,15 @@ class Board {
         this.players.delete(playerId);
         this.notifyChanges();
     }
+    createZombie() {
+        const zombie = new Zombie(createId(), this);
+        this.zombies.set(zombie.id, zombie);
+        return zombie;
+    }
+    ///removeZombie(zombieId) {
+    ///    this.zombies.delete(zombieId);
+    ///    this.notifyChanges();
+    ///}
     fire(playerId, target) {
         const player = this.players.get(playerId);
         const bullets = player.fire(target);
@@ -107,6 +121,11 @@ class Board {
         }
     }
     reset() {
+        this.zombies.clear();
+        for (let index = 0; index < this.startZombieCount; index++) {
+            this.createZombie();
+        }
+
         this.players.forEach(player => {
             player.kills = 0;
             player.deaths = 0;
@@ -130,6 +149,7 @@ class Board {
             roundDuration: this.roundDuration,
             roundResultDuration: this.roundResultDuration,
             players: [...this.players.values()],
+            zombies: [...this.zombies.values()],
             bullets: [...this.bullets],
             walls: this.walls,
             respawns: this.respawns

@@ -8,6 +8,7 @@ class Board {
 
         this.currentPlayerId = null;
         this.players = new Map;
+        this.zombies = new Map;
         this.bullets = new Set;
         this.walls = [];
         this.respawns = [];
@@ -50,6 +51,11 @@ class Board {
         Object.assign(player, data);
         this.players.set(player.id, player);
     }
+    loadZombie(data) {
+        const zombie = new Zombie();
+        Object.assign(zombie, data);
+        this.zombies.set(zombie.id, zombie);
+    }
     loadBullet(data) {
         const bullet = new Bullet(data.player, data.vel);
         Object.assign(bullet, data);
@@ -83,6 +89,9 @@ class Board {
         this.localServerTimestampDiff = this.serverTimestamp - Date.now();
         this.players.clear();
         data.players.forEach(p => this.loadPlayer(p));
+        this.zombies.clear();
+        console.log(data)
+        data.zombies.forEach(z => this.loadZombie(z));
         this.bullets.clear();
         data.bullets.forEach(b => this.loadBullet(b));
         this.loadMap(data);
@@ -154,6 +163,7 @@ class Board {
         this.clear();
         //this.drawRespawns();
         this.players.forEach(player => this.drawRect(player, player.color, true));
+        this.zombies.forEach(zombie => this.drawRect(zombie, zombie.color, false));
         this.bullets.forEach(bullet => this.drawRect(bullet));
         //this.walls.forEach(wall => this.drawRect(wall));
         this.drawScore(this.players);

@@ -31,8 +31,7 @@ const defaultMap = {
     ]
 };
 
-const board = new Board;
-board.setMap(defaultMap);
+const board = new Board(defaultMap, 5);
 board.onChange = () => {
     const data = { type: 'update-board', value: board.serialize() };
     [...clients].forEach(client => {

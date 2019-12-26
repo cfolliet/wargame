@@ -24,8 +24,8 @@ class Bullet extends Rect {
         const bullets = game.bullets;
         const width = game.width;
         const height = game.height;
-        const players = game.players;
-        const walls = game.walls;
+        const walls = game.walls;        
+        const targets = [game.players.values(), ...game.zombies.values()];
 
         if (this.left < 0 || this.right > width
             || this.top < 0 || this.bottom > height) {
@@ -38,13 +38,13 @@ class Bullet extends Rect {
                 }
             });
 
-            players.forEach(player => {
-                if (player !== this.player &&
-                    player.left < this.right && player.right > this.left &&
-                    player.top < this.bottom && player.bottom > this.top) {
+            targets.forEach(target => {
+                if (target !== this.target &&
+                    target.left < this.right && target.right > this.left &&
+                    target.top < this.bottom && target.bottom > this.top) {
                     bullets.delete(this);
                     if (game.isRoundOn()) {
-                        player.hit(this);
+                        target.hit(this);
                     }
                 }
             });
