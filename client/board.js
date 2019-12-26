@@ -90,7 +90,6 @@ class Board {
         this.players.clear();
         data.players.forEach(p => this.loadPlayer(p));
         this.zombies.clear();
-        console.log(data)
         data.zombies.forEach(z => this.loadZombie(z));
         this.bullets.clear();
         data.bullets.forEach(b => this.loadBullet(b));

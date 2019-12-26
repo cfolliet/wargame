@@ -13,21 +13,28 @@ class Zombie extends Rect {
         this.spawn();
     }
     update(dt) {
-        const vel = new Vec(this.vel.x, this.vel.y);
-        if (vel.len) {
-            vel.len = 100;
+
+        if (this.board.players.size) {
+            const target = [...this.board.players][0][1].pos;
+            this.vel.x = target.x - this.pos.x;
+            this.vel.y = target.y - this.pos.y;
+
+            const vel = new Vec(this.vel.x, this.vel.y);
+            if (vel.len) {
+                vel.len = 75;
+            }
+            this.pos.x += vel.x * dt;
+            this.pos.y += vel.y * dt;
         }
-        this.pos.x += vel.x * dt;
-        this.pos.y += vel.y * dt;
     }
     collide(game, dt) {
         const width = game.width;
         const height = game.height;
-        const objects = [...game.walls, ...game.players.values(), ...game.zombies.values()];
+        const objects = [...game.walls, ...game.zombies.values()];
 
         const vel = new Vec(this.vel.x, this.vel.y);
         if (vel.len) {
-            vel.len = 100;
+            vel.len = 75;
         }
 
         if (this.left < 0 || this.right > width

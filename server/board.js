@@ -59,10 +59,6 @@ class Board {
         this.zombies.set(zombie.id, zombie);
         return zombie;
     }
-    ///removeZombie(zombieId) {
-    ///    this.zombies.delete(zombieId);
-    ///    this.notifyChanges();
-    ///}
     fire(playerId, target) {
         const player = this.players.get(playerId);
         const bullets = player.fire(target);
@@ -109,8 +105,11 @@ class Board {
         this.players.forEach(player => {
             player.update(dt);
             player.collide(this, dt);
-        }
-        );
+        });
+        this.zombies.forEach(zombie => {
+            zombie.update(dt);
+            zombie.collide(this, dt);
+        });
         this.bullets.forEach(bullet => {
             bullet.update(dt);
             bullet.collide(this)
