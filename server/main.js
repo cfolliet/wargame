@@ -43,6 +43,13 @@ const server = new WebSocket.Server({ port: 9000 });
 
 const clients = new Set;
 
+setInterval(() => {
+    const data = board.serialize();
+    for (let client of clients) {
+        client.send({ type: 'update-board', value: data });
+    }
+}, 15);
+
 class Client {
     constructor(conn, clients) {
         this.clients = clients;
