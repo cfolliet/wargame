@@ -9,6 +9,7 @@ class Zombie extends Rect {
         this.vel = new Vec;
         this.color = 'red';
         this.health = null;
+        this.lastStrike = Date.now();
 
         this.spawn();
     }
@@ -53,6 +54,21 @@ class Zombie extends Rect {
                     this.pos.x -= vel.x * dt;
                     this.pos.y -= vel.y * dt;
                     collide = true;
+                }
+            }
+        });
+
+        [...game.players.values()].forEach(player => {
+            // todo => use for loop to break at the first collide
+            if (player.left < this.right && player.right > this.left &&
+                player.top < this.bottom && player.bottom > this.top) {
+                this.pos.x -= vel.x * dt;
+                this.pos.y -= vel.y * dt;
+                collide = true;
+                const now = Date.now();
+                if (now - this.lastStrike >= 2000) {
+                    player.health -= 35;
+                    this.lastStrike = now;
                 }
             }
         });

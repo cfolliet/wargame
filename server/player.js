@@ -20,7 +20,12 @@ class Player extends Rect {
 
         this.spawn();
     }
-    update(dt) {
+    update(dt) {        
+        if (this.health <= 0) {
+            this.deaths++;
+            this.spawn();
+        }
+
         const vel = new Vec(this.vel.x, this.vel.y);
         if (vel.len) {
             vel.len = 100;
@@ -71,6 +76,7 @@ class Player extends Rect {
         this.currentWeaponIndex = newIndex;
     }
     hit(bullet) {
+        //todo remove this function, move the health decrease and the kills++ on the bullet side, the rest is done in the update here
         this.health -= bullet.power;
         if (this.health <= 0) {
             bullet.player.kills++;
