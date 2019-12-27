@@ -102,21 +102,23 @@ class Board {
         return this.roundStartTimestamp + this.roundDuration > Date.now()
     }
     update(dt) {
-        this.players.forEach(player => {
-            player.update(dt);
-            player.collide(this, dt);
-        });
-        this.zombies.forEach(zombie => {
-            zombie.update(dt);
-            zombie.collide(this, dt);
-        });
-        this.bullets.forEach(bullet => {
-            bullet.update(dt);
-            bullet.collide(this)
-        });
+        if (this.players.size) {
+            this.players.forEach(player => {
+                player.update(dt);
+                player.collide(this, dt);
+            });
+            this.zombies.forEach(zombie => {
+                zombie.update(dt);
+                zombie.collide(this, dt);
+            });
+            this.bullets.forEach(bullet => {
+                bullet.update(dt);
+                bullet.collide(this)
+            });
 
-        if (this.roundStartTimestamp + this.roundDuration + this.roundResultDuration <= Date.now()) {
-            this.reset();
+            if (this.roundStartTimestamp + this.roundDuration + this.roundResultDuration <= Date.now()) {
+                this.reset();
+            }
         }
     }
     reset() {
@@ -126,6 +128,7 @@ class Board {
         }
 
         this.players.forEach(player => {
+            player.health = 100;
             player.kills = 0;
             player.deaths = 0;
         });

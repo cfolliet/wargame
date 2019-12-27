@@ -14,8 +14,7 @@ class Zombie extends Rect {
         this.spawn();
     }
     update(dt) {
-
-        if (this.board.players.size) {
+        if (this.board.isRoundOn()) {
             const target = [...this.board.players][0][1].pos;
             this.vel.x = target.x - this.pos.x;
             this.vel.y = target.y - this.pos.y;
