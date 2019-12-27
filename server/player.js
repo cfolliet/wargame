@@ -20,33 +20,37 @@ class Player extends Rect {
 
         this.spawn();
     }
-    update(dt) {        
+    update(dt) {
         if (this.health <= 0) {
             this.deaths++;
             this.spawn();
         }
 
-        const vel = new Vec(this.vel.x, this.vel.y);
-        if (vel.len) {
-            vel.len = 100;
+        let vel = new Vec(this.vel.x, this.vel.y);
+        let collide = this.collide(vel, this.board, dt);
+        if (collide && this.vel.x != 0 && this.vel.y != 0) {
+            vel = new Vec(0, this.vel.y);
+            collide = this.collide(vel, this.board, dt);
+            if (collide) {
+                this.vel.y = 0;
+                vel = new Vec(this.vel.x, this.vel.y);
+                collide = this.collide(vel, this.board, dt);
+                if (collide) {
+                    this.vel.x = 0;
+                }
+            }
         }
-        this.pos.x += vel.x * dt;
-        this.pos.y += vel.y * dt;
     }
-    collide(game, dt) {
+    collide(vel, game, dt) {
         const width = game.width;
         const height = game.height;
         const objects = [...game.walls, ...game.players.values()];
 
-        const vel = new Vec(this.vel.x, this.vel.y);
-        if (vel.len) {
-            vel.len = 100;
-        }
+        this.applyVel(vel, dt)
 
         if (this.left < 0 || this.right > width
             || this.top < 0 || this.bottom > height) {
-            this.pos.x -= vel.x * dt;
-            this.pos.y -= vel.y * dt;
+            this.revertVel(vel, dt);
             return true;
         }
 
@@ -56,8 +60,7 @@ class Player extends Rect {
             if (object !== this) {
                 if (object.left < this.right && object.right > this.left &&
                     object.top < this.bottom && object.bottom > this.top) {
-                    this.pos.x -= vel.x * dt;
-                    this.pos.y -= vel.y * dt;
+                    this.revertVel(vel, dt);
                     collide = true;
                 }
             }
@@ -65,14 +68,28 @@ class Player extends Rect {
 
         return collide;
     }
-    fire(target) {        
+    applyVel(vel, dt) {
+        if (vel.len) {
+            vel.len = 100;
+        }
+        this.pos.x += vel.x * dt;
+        this.pos.y += vel.y * dt;
+    }
+    revertVel(vel, dt) {
+        if (vel.len) {
+            vel.len = 100;
+        }
+        this.pos.x -= vel.x * dt;
+        this.pos.y -= vel.y * dt;
+    }
+    fire(target) {
         const vel = new Vec(target.x - this.pos.x, target.y - this.pos.y);
         return this.weapons[this.currentWeaponIndex].fire(this, vel);
     }
-    reload(){
+    reload() {
         this.weapons[this.currentWeaponIndex].reload();
     }
-    changeWeapon(newIndex){
+    changeWeapon(newIndex) {
         this.currentWeaponIndex = newIndex;
     }
     hit(bullet) {
@@ -90,7 +107,7 @@ class Player extends Rect {
             const respawn = this.board.respawns[Math.random() * this.board.respawns.length | 0];
             this.pos.x = respawn.pos.x + (Math.random() * respawn.size.x | 0);
             this.pos.y = respawn.pos.y + (Math.random() * respawn.size.y | 0);
-        } while (this.collide(this.board, 0));
+        } while (this.collide(new Vec, this.board, 0));
         this.board.notifyChanges();
     }
 }

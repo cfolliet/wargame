@@ -105,7 +105,6 @@ class Board {
         if (this.players.size) {
             this.players.forEach(player => {
                 player.update(dt);
-                player.collide(this, dt);
             });
             this.zombies.forEach(zombie => {
                 zombie.update(dt);
