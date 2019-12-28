@@ -59,7 +59,7 @@ class Zombie extends Rect {
 
         if (this.left < 0 || this.right > width
             || this.top < 0 || this.bottom > height) {
-            this.revertVel(vel, dt)
+            this.applyVel(vel, dt, true);
             return true;
         }
 
@@ -69,7 +69,7 @@ class Zombie extends Rect {
             if (object !== this) {
                 if (object.left < this.right && object.right > this.left &&
                     object.top < this.bottom && object.bottom > this.top) {
-                    this.revertVel(vel, dt)
+                    this.applyVel(vel, dt, true);
                     collide = true;
                 }
             }
@@ -79,7 +79,7 @@ class Zombie extends Rect {
             // todo => use for loop to break at the first collide
             if (player.left < this.right && player.right > this.left &&
                 player.top < this.bottom && player.bottom > this.top) {
-                this.revertVel(vel, dt)
+                this.applyVel(vel, dt, true);
                 collide = true;
                 const now = Date.now();
                 if (now - this.lastStrike >= 2000) {
@@ -91,19 +91,13 @@ class Zombie extends Rect {
 
         return collide;
     }
-    applyVel(vel, dt) {
+    applyVel(vel, dt, invert = false) {
         if (vel.len) {
             vel.len = 75;
         }
-        this.pos.x += vel.x * dt;
-        this.pos.y += vel.y * dt;
-    }
-    revertVel(vel, dt) {
-        if (vel.len) {
-            vel.len = 75;
-        }
-        this.pos.x -= vel.x * dt;
-        this.pos.y -= vel.y * dt;
+        let modifiyer = invert ? -1 : 1;
+        this.pos.x += vel.x * dt * modifiyer;
+        this.pos.y += vel.y * dt * modifiyer;
     }
     hit(bullet) {
         this.health -= bullet.power;
