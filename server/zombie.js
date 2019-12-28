@@ -20,7 +20,7 @@ class Zombie extends Rect {
 
             [...this.board.players.values()].forEach(player => {
                 const dist = Math.hypot(player.pos.x - this.pos.x, player.pos.y - this.pos.y);
-                if (target == null || dist < targetDist) {
+                if (dist <= 200 && (target == null || dist < targetDist)) {
                     targetDist = dist
                     target = player;
                 }
