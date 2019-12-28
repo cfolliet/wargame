@@ -32,12 +32,8 @@ class Player extends Rect {
             vel = new Vec(0, this.vel.y);
             collide = this.collide(vel, this.board, dt);
             if (collide) {
-                this.vel.y = 0;
-                vel = new Vec(this.vel.x, this.vel.y);
-                collide = this.collide(vel, this.board, dt);
-                if (collide) {
-                    this.vel.x = 0;
-                }
+                vel = new Vec(this.vel.x, 0);
+                this.collide(vel, this.board, dt);
             }
         }
     }
@@ -50,7 +46,7 @@ class Player extends Rect {
 
         if (this.left < 0 || this.right > width
             || this.top < 0 || this.bottom > height) {
-            this.revertVel(vel, dt);
+            this.applyVel(vel, dt, true);
             return true;
         }
 
@@ -60,7 +56,7 @@ class Player extends Rect {
             if (object !== this) {
                 if (object.left < this.right && object.right > this.left &&
                     object.top < this.bottom && object.bottom > this.top) {
-                    this.revertVel(vel, dt);
+                    this.applyVel(vel, dt, true);
                     collide = true;
                 }
             }
@@ -68,19 +64,13 @@ class Player extends Rect {
 
         return collide;
     }
-    applyVel(vel, dt) {
+    applyVel(vel, dt, invert = false) {
         if (vel.len) {
             vel.len = 100;
         }
-        this.pos.x += vel.x * dt;
-        this.pos.y += vel.y * dt;
-    }
-    revertVel(vel, dt) {
-        if (vel.len) {
-            vel.len = 100;
-        }
-        this.pos.x -= vel.x * dt;
-        this.pos.y -= vel.y * dt;
+        let modifiyer = invert ? -1 : 1;
+        this.pos.x += vel.x * dt * modifiyer;
+        this.pos.y += vel.y * dt * modifiyer;
     }
     fire(target) {
         const vel = new Vec(target.x - this.pos.x, target.y - this.pos.y);
