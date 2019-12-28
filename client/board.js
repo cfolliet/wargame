@@ -65,15 +65,11 @@ class Board {
         this.walls = [];
         this.respawns = [];
         map.walls.forEach(w => {
-            const wall = new Rect(w.size.x, w.size.y);
-            wall.pos.x = w.pos.x;
-            wall.pos.y = w.pos.y;
+            const wall = new Rect(w.pos.x, w.pos.y, w.size.x, w.size.y);
             this.walls.push(wall);
         });
         map.respawns.forEach(r => {
-            const respawn = new Rect(r.size.x, r.size.y);
-            respawn.pos.x = r.pos.x;
-            respawn.pos.y = r.pos.y;
+            const respawn = new Rect(r.pos.x, r.pos.y, r.size.x, r.size.y);
             this.respawns.push(respawn);
         });
     }

@@ -1,6 +1,6 @@
 class Zombie extends Rect {
     constructor() {
-        super(10, 10);
+        super(0, 0, 10, 10);
         this.vel = new Vec;
         this.color = 'red';
         this.health = null;

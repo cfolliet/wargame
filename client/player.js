@@ -1,6 +1,6 @@
 class Player extends Rect {
     constructor(name = '') {
-        super(10, 10);
+        super(0, 0, 10, 10);
         this.vel = new Vec;
         this.kills = 0;
         this.deaths = 0;

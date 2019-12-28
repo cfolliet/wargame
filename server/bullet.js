@@ -5,7 +5,7 @@ const BULLET_POWER = 35;
 
 class Bullet extends Rect {
     constructor(player, vel) {
-        super(2, 2);
+        super(0, 0, 2, 2);
         this.vel = vel;
         this.player = player;
         this.pos.x = player.pos.x;
@@ -24,7 +24,7 @@ class Bullet extends Rect {
         const bullets = game.bullets;
         const width = game.width;
         const height = game.height;
-        const walls = game.walls;        
+        const walls = game.walls;
         const targets = [game.players.values(), ...game.zombies.values()];
 
         if (this.left < 0 || this.right > width
