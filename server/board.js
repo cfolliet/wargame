@@ -125,6 +125,7 @@ class Board {
             player.health = 100;
             player.kills = 0;
             player.deaths = 0;
+            player.weapons.forEach(weapon => weapon.reset());
         });
         this.bullets = new Set;
         this.roundStartTimestamp = Date.now();
