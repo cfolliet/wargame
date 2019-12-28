@@ -19,28 +19,32 @@ class Zombie extends Rect {
             this.vel.x = target.x - this.pos.x;
             this.vel.y = target.y - this.pos.y;
 
-            const vel = new Vec(this.vel.x, this.vel.y);
-            if (vel.len) {
-                vel.len = 75;
+            let vel = new Vec(this.vel.x, this.vel.y);
+            let collide = this.collide(vel, this.board, dt);
+            if (collide && this.vel.x != 0 && this.vel.y != 0) {
+                vel = new Vec(0, this.vel.y);
+                collide = this.collide(vel, this.board, dt);
+                if (collide) {
+                    this.vel.y = 0;
+                    vel = new Vec(this.vel.x, this.vel.y);
+                    collide = this.collide(vel, this.board, dt);
+                    if (collide) {
+                        this.vel.x = 0;
+                    }
+                }
             }
-            this.pos.x += vel.x * dt;
-            this.pos.y += vel.y * dt;
         }
     }
-    collide(game, dt) {
+    collide(vel, game, dt) {
         const width = game.width;
         const height = game.height;
         const objects = [...game.walls, ...game.zombies.values()];
 
-        const vel = new Vec(this.vel.x, this.vel.y);
-        if (vel.len) {
-            vel.len = 75;
-        }
+        this.applyVel(vel, dt);
 
         if (this.left < 0 || this.right > width
             || this.top < 0 || this.bottom > height) {
-            this.pos.x -= vel.x * dt;
-            this.pos.y -= vel.y * dt;
+            this.revertVel(vel, dt)
             return true;
         }
 
@@ -50,8 +54,7 @@ class Zombie extends Rect {
             if (object !== this) {
                 if (object.left < this.right && object.right > this.left &&
                     object.top < this.bottom && object.bottom > this.top) {
-                    this.pos.x -= vel.x * dt;
-                    this.pos.y -= vel.y * dt;
+                    this.revertVel(vel, dt)
                     collide = true;
                 }
             }
@@ -61,8 +64,7 @@ class Zombie extends Rect {
             // todo => use for loop to break at the first collide
             if (player.left < this.right && player.right > this.left &&
                 player.top < this.bottom && player.bottom > this.top) {
-                this.pos.x -= vel.x * dt;
-                this.pos.y -= vel.y * dt;
+                this.revertVel(vel, dt)
                 collide = true;
                 const now = Date.now();
                 if (now - this.lastStrike >= 2000) {
@@ -73,6 +75,20 @@ class Zombie extends Rect {
         });
 
         return collide;
+    }
+    applyVel(vel, dt) {
+        if (vel.len) {
+            vel.len = 75;
+        }
+        this.pos.x += vel.x * dt;
+        this.pos.y += vel.y * dt;
+    }
+    revertVel(vel, dt) {
+        if (vel.len) {
+            vel.len = 75;
+        }
+        this.pos.x -= vel.x * dt;
+        this.pos.y -= vel.y * dt;
     }
     hit(bullet) {
         this.health -= bullet.power;
@@ -88,7 +104,7 @@ class Zombie extends Rect {
             const respawn = this.board.respawns[Math.random() * this.board.respawns.length | 0];
             this.pos.x = respawn.pos.x + (Math.random() * respawn.size.x | 0);
             this.pos.y = respawn.pos.y + (Math.random() * respawn.size.y | 0);
-        } while (this.collide(this.board, 0));
+        } while (this.collide(new Vec, this.board, 0));
         this.board.notifyChanges();
     }
 }
