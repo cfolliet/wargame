@@ -15,9 +15,24 @@ class Zombie extends Rect {
     }
     update(dt) {
         if (this.board.isRoundOn()) {
-            const target = [...this.board.players][0][1].pos;
-            this.vel.x = target.x - this.pos.x;
-            this.vel.y = target.y - this.pos.y;
+            let target = null;
+            let targetDist = this.board.width + this.board.height;
+
+            [...this.board.players.values()].forEach(player => {
+                const dist = Math.hypot(player.pos.x - this.pos.x, player.pos.y - this.pos.y);
+                if (target == null || dist < targetDist) {
+                    targetDist = dist
+                    target = player;
+                }
+            });
+
+            if (target) {
+                this.vel.x = target.pos.x - this.pos.x;
+                this.vel.y = target.pos.y - this.pos.y;
+            } else {
+                this.vel.x = 0;
+                this.vel.y = 0;
+            }
 
             let vel = new Vec(this.vel.x, this.vel.y);
             let collide = this.collide(vel, this.board, dt);
