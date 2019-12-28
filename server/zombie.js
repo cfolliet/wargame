@@ -10,6 +10,7 @@ class Zombie extends Rect {
         this.color = 'red';
         this.health = null;
         this.lastStrike = Date.now();
+        this.speed = Math.floor(Math.random() * (100 - 75 + 1) + 75);
 
         this.spawn();
     }
@@ -93,7 +94,7 @@ class Zombie extends Rect {
     }
     applyVel(vel, dt, invert = false) {
         if (vel.len) {
-            vel.len = 75;
+            vel.len = this.speed;
         }
         let modifiyer = invert ? -1 : 1;
         this.pos.x += vel.x * dt * modifiyer;
