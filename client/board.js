@@ -135,6 +135,7 @@ class Board {
     drawHealth() {
         if (this.currentPlayer()) {
             this._context.fillStyle = '#fff';
+            this._context.font = "20px monospace";
             this._context.fillText('\u2764 ' + this.currentPlayer().health, 20, this._canvas.height / this.scale - 20);
         }
     }
@@ -143,10 +144,13 @@ class Board {
             this._context.fillStyle = '#fff';
             const player = this.currentPlayer();
             const weapon = player.weapons[player.currentWeaponIndex];
+            var image = document.getElementById(weapon.name);
             if (weapon.isReloading) {
-                this._context.fillText(`${weapon.name}: RELOADING...`, 100, this._canvas.height / this.scale - 20);
+                this._context.drawImage(image, 100, this._canvas.height / this.scale - 40, 30, 30);
+                this._context.fillText(`RELOADING...`, 140, this._canvas.height / this.scale - 20);
             } else {
-                this._context.fillText(`${weapon.name}: ${weapon.bulletCount}/${weapon.maxBulletCount}`, 100, this._canvas.height / this.scale - 20);
+                this._context.drawImage(image, 100, this._canvas.height / this.scale - 40, 30, 30);
+                this._context.fillText(`${weapon.bulletCount}/${weapon.maxBulletCount}`, 140, this._canvas.height / this.scale - 20);
             }
         }
     }
