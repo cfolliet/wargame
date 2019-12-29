@@ -111,9 +111,8 @@ class Zombie extends Rect {
     spawn() {
         this.health = 100;
         do {
-            const respawn = this.board.respawns[Math.random() * this.board.respawns.length | 0];
-            this.pos.x = respawn.pos.x + (Math.random() * respawn.size.x | 0);
-            this.pos.y = respawn.pos.y + (Math.random() * respawn.size.y | 0);
+            this.pos.x = Math.random() * this.board.width | 0;
+            this.pos.y = Math.random() * this.board.height | 0;
         } while (this.collide(new Vec, this.board, 0));
         this.board.notifyChanges();
     }
