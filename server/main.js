@@ -70,7 +70,7 @@ class Client {
     send(data) {
         if (typeof data.value === 'object') {
             data.value.currentPlayerId = this.playerId;
-            data.value.serverTimestamp = Date.now();
+            data.value.time = Date.now();
         }
         const msg = JSON.stringify(data);
         this.conn.send(msg);
