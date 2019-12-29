@@ -90,6 +90,7 @@ class Board {
     clear() {
         //this._context.fillStyle = '#000';
         //this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
+        this._context.font = "20px monospace";
         var image = document.getElementById('background-image');
         this._context.drawImage(image, 0, 0);
     }
@@ -135,7 +136,6 @@ class Board {
     drawHealth() {
         if (this.currentPlayer()) {
             this._context.fillStyle = '#fff';
-            this._context.font = "20px monospace";
             this._context.fillText('\u2764 ' + this.currentPlayer().health, 20, this._canvas.height / this.scale - 20);
         }
     }
