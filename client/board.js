@@ -103,11 +103,16 @@ class Board {
     drawTime() {
         this._context.fillStyle = '#fff';
         if (this.roundStartTimestamp + this.roundDuration > this.time) {
+            this._context.textAlign = 'right';
             const roundDuration = new Date(1000 * Math.round((this.roundStartTimestamp + this.roundDuration - this.time) / 1000)); // round to nearest second
-            this._context.fillText('Time left: ' + roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0'), this._canvas.width / this.scale - 115, 20, 100);
+            const text = 'Time left: ' + roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0');
+            this._context.fillText(text, this._canvas.width / this.scale, 20);
         } else {
+            this._context.font = '30px monospace';
+            this._context.textAlign = 'center';
             const waitDuration = new Date(1000 * Math.round((this.roundStartTimestamp + this.roundDuration + this.roundResultDuration - this.time) / 1000)); // round to nearest second
-            this._context.fillText('New round in: ' + waitDuration.getUTCMinutes() + ':' + waitDuration.getUTCSeconds().toString().padStart(2, '0'), this._canvas.width / 3 / this.scale, this._canvas.width / 2 / this.scale, 100);
+            const text = 'NEXT ROUND IN ' + waitDuration.getUTCMinutes() + ':' + waitDuration.getUTCSeconds().toString().padStart(2, '0');
+            this._context.fillText(text, this._canvas.width / this.scale / 2, this._canvas.height / this.scale / 2);
         }
     }
     drawScore(players) {
