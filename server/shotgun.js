@@ -6,7 +6,6 @@ class Shotgun extends Weapon {
     constructor() {
         super({
             name: 'shotgun',
-            range: 7000,
             maxBulletCount: 5,
             reloadDuration: 10000,
             loadDuration: 1000,
@@ -22,8 +21,8 @@ class Shotgun extends Weapon {
             ];
 
             for (let index = -5; index < 6; index++) {
-                const newVel = new Vec(vel.x + index * 15, vel.y + index * 15);
-                bullets.push(new Bullet(player, newVel))                
+                const newVel = new Vec(vel.x + index * 90, vel.y + index * 90);
+                bullets.push(new Bullet(player, newVel, 10, 35));
             }
             return bullets;
         }

@@ -1,16 +1,14 @@
 const Rect = require('./rect.js');
 const Vec = require('./vec.js');
 
-const BULLET_POWER = 35;
-
 class Bullet extends Rect {
-    constructor(player, vel) {
+    constructor(player, vel, minDamage = 0, maxDamage = 0) {
         super(0, 0, 2, 2);
         this.vel = vel;
         this.player = player;
         this.pos.x = player.pos.x;
         this.pos.y = player.pos.y;
-        this.power = BULLET_POWER;
+        this.damage = Math.floor(Math.random() * (maxDamage - minDamage + 1) + minDamage);;
     }
     update(dt) {
         const vel = new Vec(this.vel.x, this.vel.y);

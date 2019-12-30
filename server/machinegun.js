@@ -5,7 +5,6 @@ class Machinegun extends Weapon {
     constructor() {
         super({
             name: 'machinegun',
-            range: 13000,
             maxBulletCount: 30,
             reloadDuration: 5000,
             loadDuration: 100,
@@ -15,7 +14,7 @@ class Machinegun extends Weapon {
     fire(player, vel) {
         const fire = super.fire();
         if (fire) {
-            return [new Bullet(player, vel)];
+            return [new Bullet(player, vel, 10, 60)];
         }
         return null;
     }

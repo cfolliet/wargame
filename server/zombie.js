@@ -101,7 +101,7 @@ class Zombie extends Rect {
         this.pos.y += vel.y * dt * modifiyer;
     }
     hit(bullet) {
-        this.health -= bullet.power;
+        this.health -= bullet.damage;
         if (this.health <= 0) {
             bullet.player.kills++;
             this.board.zombies.delete(this.id);

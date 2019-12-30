@@ -84,7 +84,7 @@ class Player extends Rect {
     }
     hit(bullet) {
         //todo remove this function, move the health decrease and the kills++ on the bullet side, the rest is done in the update here
-        this.health -= bullet.power;
+        this.health -= bullet.damage;
         if (this.health <= 0) {
             bullet.player.kills++;
             this.deaths++;
