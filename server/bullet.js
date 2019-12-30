@@ -25,7 +25,7 @@ class Bullet extends Rect {
         const width = game.width;
         const height = game.height;
         const walls = game.walls;
-        const targets = [game.players.values(), ...game.zombies.values()];
+        const targets = [...game.players.values(), ...game.zombies.values()];
 
         if (this.left < 0 || this.right > width
             || this.top < 0 || this.bottom > height) {
@@ -39,7 +39,7 @@ class Bullet extends Rect {
             });
 
             targets.forEach(target => {
-                if (target !== this.target &&
+                if (target !== this.player &&
                     target.left < this.right && target.right > this.left &&
                     target.top < this.bottom && target.bottom > this.top) {
                     bullets.delete(this);
