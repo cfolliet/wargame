@@ -149,17 +149,20 @@ class Board {
             const weapon = player.weapons[player.currentWeaponIndex];
             var image = document.getElementById(weapon.name);
             const loadingDone = this.time - weapon.loadTimestamp;
+            let loadingPercentage = 0;
+
+            this._context.drawImage(image, 100, this._canvas.height / this.scale - 40, 30, 30);
+
             if (weapon.isReloading) {
-                this._context.drawImage(image, 100, this._canvas.height / this.scale - 40, 30, 30);
                 this._context.fillText(`RELOADING`, 140, this._canvas.height / this.scale - 20);
-                const width = Math.max(0, 100 - (loadingDone * 100 / weapon.reloadDuration));
-                this._context.fillRect(140, this._canvas.height / this.scale - 15, width, 5);
+                loadingPercentage = loadingDone * 100 / weapon.reloadDuration;
             } else {
-                this._context.drawImage(image, 100, this._canvas.height / this.scale - 40, 30, 30);
                 this._context.fillText(`${weapon.bulletCount}/${weapon.maxBulletCount}`, 140, this._canvas.height / this.scale - 20);
-                const width = Math.max(0, 100 - (loadingDone * 100 / weapon.loadDuration));
-                this._context.fillRect(140, this._canvas.height / this.scale - 15, width, 5);
+                loadingPercentage = loadingDone * 100 / weapon.loadDuration;
             }
+
+            let width = Math.max(0, 100 - loadingPercentage);
+            this._context.fillRect(140, this._canvas.height / this.scale - 15, width, 5);
         }
     }
     draw() {
