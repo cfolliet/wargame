@@ -23,15 +23,18 @@ const defaultMap = {
         [450, 570, 115, 65],
         [690, 585, 70, 35]
     ],
-    respawns: [
-        [0, 0, 50, 600],
-        [750, 0, 50, 800],
-        [0, 0, 800, 50],
-        [0, 550, 800, 50],
+    playerSpawns: [
+        [266, 200, 266, 200],
+    ],
+    zombieSpawns: [
+        [0, 0, 100, 600],
+        [700, 0, 100, 800],
+        [0, 0, 800, 100],
+        [0, 500, 800, 100],
     ]
 };
 
-const board = new Board(defaultMap, 10);
+const board = new Board(defaultMap, 5);
 board.onChange = () => {
     const data = { type: 'update-board', value: board.serialize() };
     [...clients].forEach(client => {

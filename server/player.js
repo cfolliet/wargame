@@ -94,7 +94,7 @@ class Player extends Rect {
     spawn() {
         this.health = 100;
         do {
-            const respawn = this.board.respawns[Math.random() * this.board.respawns.length | 0];
+            const respawn = this.board.playerSpawns[Math.random() * this.board.playerSpawns.length | 0];
             this.pos.x = respawn.pos.x + (Math.random() * respawn.size.x | 0);
             this.pos.y = respawn.pos.y + (Math.random() * respawn.size.y | 0);
         } while (this.collide(new Vec, this.board, 0));

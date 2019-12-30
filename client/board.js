@@ -8,7 +8,7 @@ class Board {
         this.zombies = new Map;
         this.bullets = new Set;
         this.walls = [];
-        this.respawns = [];
+        this.playerSpawns = [];
 
         this.roundStartTimestamp = null;
         this.roundDuration = null;
@@ -57,14 +57,14 @@ class Board {
     }
     loadMap(map) {
         this.walls = [];
-        this.respawns = [];
+        this.playerSpawns = [];
         map.walls.forEach(w => {
             const wall = new Rect(w.pos.x, w.pos.y, w.size.x, w.size.y);
             this.walls.push(wall);
         });
-        map.respawns.forEach(r => {
+        map.playerSpawns.forEach(r => {
             const respawn = new Rect(r.pos.x, r.pos.y, r.size.x, r.size.y);
-            this.respawns.push(respawn);
+            this.playerSpawns.push(respawn);
         });
     }
     load(data) {
@@ -125,8 +125,8 @@ class Board {
             this._context.fillText(`${player.name}: ${player.kills}/${player.deaths}`, this._canvas.width / this.scale - 100, 40 + index * 20, 100);
         });
     }
-    drawRespawns() {
-        this.respawns.forEach(respawn => {
+    drawplayerSpawns() {
+        this.playerSpawns.forEach(respawn => {
             this._context.fillStyle = 'violet';
             this._context.fillRect(respawn.pos.x, respawn.pos.y, respawn.size.x, respawn.size.y);
         });
@@ -159,7 +159,7 @@ class Board {
     }
     draw() {
         this.clear();
-        //this.drawRespawns();
+        //this.drawplayerSpawns();
         this.players.forEach(player => this.drawRect(player, player.color, true));
         this.zombies.forEach(zombie => this.drawRect(zombie, zombie.color, false));
         this.bullets.forEach(bullet => this.drawRect(bullet));

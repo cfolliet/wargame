@@ -2,7 +2,7 @@ const Player = require('./player.js');
 const Zombie = require('./zombie.js');
 const Rect = require('./rect.js');
 
-const ROUND_DURATION = 1000 * 30;
+const ROUND_DURATION = 1000 * 60 * 2;
 const ROUND_RESULT_DURATION = 1000 * 10;
 
 function requestAnimationFrame(f) {
@@ -26,7 +26,8 @@ class Board {
         this.startZombieCount = zombieCount;
         this.zombies = new Map;
         this.walls = [];
-        this.respawns = [];
+        this.playerSpawns = [];
+        this.zombieSpawns = [];
 
         this.setMap(map);
 
@@ -89,9 +90,13 @@ class Board {
             const wall = new Rect(w[0], w[1], w[2], w[3]);
             this.walls.push(wall);
         });
-        map.respawns.forEach(r => {
+        map.playerSpawns.forEach(r => {
             const respawn = new Rect(r[0], r[1], r[2], r[3]);
-            this.respawns.push(respawn);
+            this.playerSpawns.push(respawn);
+        });
+        map.zombieSpawns.forEach(r => {
+            const respawn = new Rect(r[0], r[1], r[2], r[3]);
+            this.zombieSpawns.push(respawn);
         });
     }
     isRoundOn() {
@@ -145,7 +150,7 @@ class Board {
             zombies: [...this.zombies.values()],
             bullets: [...this.bullets],
             walls: this.walls,
-            respawns: this.respawns
+            playerSpawns: this.playerSpawns
         };
     }
 }

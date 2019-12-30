@@ -10,7 +10,7 @@ class Zombie extends Rect {
         this.color = 'red';
         this.health = null;
         this.lastStrike = Date.now();
-        this.speed = Math.floor(Math.random() * (100 - 75 + 1) + 75);
+        this.speed = Math.floor(Math.random() * (50 - 33 + 1) + 33);
 
         this.spawn();
     }
@@ -21,7 +21,7 @@ class Zombie extends Rect {
 
             [...this.board.players.values()].forEach(player => {
                 const dist = Math.hypot(player.pos.x - this.pos.x, player.pos.y - this.pos.y);
-                if (dist <= 200 && (target == null || dist < targetDist)) {
+                if (dist <= 300 && (target == null || dist < targetDist)) {
                     targetDist = dist
                     target = player;
                 }
@@ -105,14 +105,21 @@ class Zombie extends Rect {
         if (this.health <= 0) {
             bullet.player.kills++;
             this.board.zombies.delete(this.id);
+
+            this.board.createZombie();
+            if(Math.random() >= 0.25){
+                this.board.createZombie();
+            }
+
             this.board.notifyChanges();
         }
     }
     spawn() {
         this.health = 100;
         do {
-            this.pos.x = Math.random() * this.board.width | 0;
-            this.pos.y = Math.random() * this.board.height | 0;
+            const respawn = this.board.zombieSpawns[Math.random() * this.board.zombieSpawns.length | 0];
+            this.pos.x = respawn.pos.x + (Math.random() * respawn.size.x | 0);
+            this.pos.y = respawn.pos.y + (Math.random() * respawn.size.y | 0);
         } while (this.collide(new Vec, this.board, 0));
         this.board.notifyChanges();
     }
