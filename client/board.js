@@ -1,8 +1,5 @@
-const BOARD_SCALE = 1;
-
 class Board {
     constructor(canvas) {
-        this.scale = BOARD_SCALE;
         this._canvas = canvas;
         this._context = canvas.getContext('2d');
 
@@ -71,6 +68,7 @@ class Board {
         });
     }
     load(data) {
+        this.scale = Math.min((window.innerHeight - 80) / data.height, (window.innerWidth - 80) / data.width);
         this._canvas.width = data.width * this.scale;
         this._canvas.height = data.height * this.scale;
         this._context.scale(this.scale, this.scale);
