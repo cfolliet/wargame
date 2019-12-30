@@ -13,6 +13,8 @@ class Board {
         this.roundStartTimestamp = null;
         this.roundDuration = null;
 
+        this.currentHealth = 100;
+
         this.ping = 999;
         this.fps = 0;
         let lastTime = null;
@@ -140,6 +142,14 @@ class Board {
         if (this.currentPlayer()) {
             this._context.fillStyle = '#fff';
             this._context.fillText('\u2764 ' + this.currentPlayer().health, 20, this._canvas.height / this.scale - 20);
+
+            if (this.currentHealth > this.currentPlayer().health) {
+                this._context.fillStyle = 'red';
+                this._context.fillRect(0, 0, this._canvas.width / this.scale, this._canvas.height / this.scale);
+                setTimeout(() => this.currentHealth = this.currentPlayer().health, 68);
+            } else {
+                this.currentHealth = this.currentPlayer().health;
+            }
         }
     }
     drawWeapon() {
@@ -182,8 +192,7 @@ class Board {
         this.players.forEach(player => {
             player.update(dt);
             player.collide(this, dt);
-        }
-        );
+        });
         this.bullets.forEach(bullet => {
             bullet.update(dt);
             bullet.collide(this)
