@@ -21,6 +21,9 @@ class Weapon {
         }, this.loadDuration)
     }
     reload() {
+        if (this.isReloading) {
+            return;
+        }
         this.isReloading = true;
         this.loadTimestamp = Date.now();
         setTimeout(() => {
