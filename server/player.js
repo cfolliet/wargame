@@ -98,6 +98,7 @@ class Player extends Rect {
             this.pos.x = respawn.pos.x + (Math.random() * respawn.size.x | 0);
             this.pos.y = respawn.pos.y + (Math.random() * respawn.size.y | 0);
         } while (this.collide(new Vec, this.board, 0));
+        this.weapons.forEach(weapon => weapon.reset());
         this.board.notifyChanges();
     }
 }
