@@ -1,4 +1,5 @@
 const Player = require('./player.js');
+const Zombie = require('./zombie.js');
 const Rect = require('./rect.js');
 
 const ROUND_DURATION = 1000 * 30;
@@ -17,13 +18,17 @@ function createId(len = 6, chars = 'abcdefghijklmnopqrstuvwxyz01234567890') {
 }
 
 class Board {
-    constructor() {
+    constructor(map, zombieCount) {
         this.width = 0;
         this.height = 0;
 
         this.players = new Map;
+        this.startZombieCount = zombieCount;
+        this.zombies = new Map;
         this.walls = [];
         this.respawns = [];
+
+        this.setMap(map);
 
         this.reset();
 
@@ -48,6 +53,11 @@ class Board {
     removePlayer(playerId) {
         this.players.delete(playerId);
         this.notifyChanges();
+    }
+    createZombie() {
+        const zombie = new Zombie(createId(), this);
+        this.zombies.set(zombie.id, zombie);
+        return zombie;
     }
     fire(playerId, target) {
         const player = this.players.get(playerId);
@@ -76,15 +86,11 @@ class Board {
         this.width = map.width;
         this.height = map.height;
         map.walls.forEach(w => {
-            const wall = new Rect(w[2], w[3]);
-            wall.pos.x = w[0];
-            wall.pos.y = w[1];
+            const wall = new Rect(w[0], w[1], w[2], w[3]);
             this.walls.push(wall);
         });
         map.respawns.forEach(r => {
-            const respawn = new Rect(r[2], r[3]);
-            respawn.pos.x = r[0];
-            respawn.pos.y = r[1];
+            const respawn = new Rect(r[0], r[1], r[2], r[3]);
             this.respawns.push(respawn);
         });
     }
@@ -92,24 +98,30 @@ class Board {
         return this.roundStartTimestamp + this.roundDuration > Date.now()
     }
     update(dt) {
-        this.players.forEach(player => {
-            player.update(dt);
-            player.collide(this, dt);
-        }
-        );
-        this.bullets.forEach(bullet => {
-            bullet.update(dt);
-            bullet.collide(this)
-        });
+        if (this.players.size) {
+            this.players.forEach(player => player.update(dt));
+            this.zombies.forEach(zombie => zombie.update(dt));
+            this.bullets.forEach(bullet => {
+                bullet.update(dt);
+                bullet.collide(this)
+            });
 
-        if (this.roundStartTimestamp + this.roundDuration + this.roundResultDuration <= Date.now()) {
-            this.reset();
+            if (this.roundStartTimestamp + this.roundDuration + this.roundResultDuration <= Date.now()) {
+                this.reset();
+            }
         }
     }
     reset() {
+        this.zombies.clear();
+        for (let index = 0; index < this.startZombieCount; index++) {
+            this.createZombie();
+        }
+
         this.players.forEach(player => {
+            player.health = 100;
             player.kills = 0;
             player.deaths = 0;
+            player.weapons.forEach(weapon => weapon.reset());
         });
         this.bullets = new Set;
         this.roundStartTimestamp = Date.now();
@@ -130,6 +142,7 @@ class Board {
             roundDuration: this.roundDuration,
             roundResultDuration: this.roundResultDuration,
             players: [...this.players.values()],
+            zombies: [...this.zombies.values()],
             bullets: [...this.bullets],
             walls: this.walls,
             respawns: this.respawns

@@ -5,9 +5,16 @@ class InGameActionHandler {
 
         this.fireInterval = null;
         this.fireTarget = null;
+        this.keysPressed = new Set;
     }
+
     registerListeners() {
         document.addEventListener("keydown", event => {
+            if (this.keysPressed.has(event.keyCode)) {
+                return;
+            }
+
+            this.keysPressed.add(event.keyCode);
             if (event.keyCode == 37 || event.keyCode == 81) {
                 this.webSocketServer.send({ type: 'move-player', value: { axis: 'x', direction: -1 } });
                 this.board.movePlayer('x', -1);
@@ -30,6 +37,7 @@ class InGameActionHandler {
         });
 
         document.addEventListener("keyup", event => {
+            this.keysPressed.delete(event.keyCode);
             if (event.keyCode == 37 || event.keyCode == 81) {
                 this.webSocketServer.send({ type: 'move-player', value: { axis: 'x', direction: 0 } });
                 this.board.movePlayer('x', 0);
@@ -60,7 +68,7 @@ class InGameActionHandler {
             this.fireTarget = { x: (event.clientX - rect.left) / this.board.scale, y: (event.clientY - rect.top) / this.board.scale };
         });
         document.addEventListener('mousedown', event => {
-            this.fireInterval = setInterval(fire, 300);
+            this.fireInterval = setInterval(fire, 50);
         });
         document.addEventListener('mouseup', event => {
             clearInterval(this.fireInterval);

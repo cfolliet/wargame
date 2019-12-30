@@ -6,7 +6,6 @@ class Pistol extends Weapon {
         super({
             name: 'pistol',
             range: 13000,
-            bulletCount: 15,
             maxBulletCount: 15,
             reloadDuration: 5000,
             loadDuration: 500,

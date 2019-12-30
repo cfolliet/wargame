@@ -1,27 +1,29 @@
-class Player extends Rect {
-    constructor(name = '') {
+class Zombie extends Rect {
+    constructor() {
         super(0, 0, 10, 10);
         this.vel = new Vec;
-        this.kills = 0;
-        this.deaths = 0;
-        this.name = name;
-        this.color =  'grey';
+        this.color = 'red';
+        this.health = null;
     }
     update(dt) {
+        const target = [...this.board.players][0][1].pos;
+        this.vel.x = target.x - this.pos.x;
+        this.vel.y = target.y - this.pos.y;
+
         const vel = new Vec(this.vel.x, this.vel.y);
         if (vel.len) {
-            vel.len = 100;
+            vel.len = 75;
         }
         this.pos.x += vel.x * dt;
         this.pos.y += vel.y * dt;
     }
     collide(game, dt) {
         const canvas = game._canvas;
-        const objects = [...game.walls, ...game.players.values()];
+        const objects = [...game.walls, ...game.zombies.values()];
 
         const vel = new Vec(this.vel.x, this.vel.y);
         if (vel.len) {
-            vel.len = 100;
+            vel.len = 75;
         }
 
         if (this.left < 0 || this.right > canvas.width

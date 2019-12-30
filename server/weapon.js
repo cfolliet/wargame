@@ -1,13 +1,13 @@
 class Weapon {
     constructor(options) {
+        this.options = options;
         this.name = options.name;
         this.range = options.range;
-        this.bulletCount = options.bulletCount;
         this.maxBulletCount = options.maxBulletCount;
         this.loadDuration = options.loadDuration;
         this.reloadDuration = options.reloadDuration;
-        this.isLoading = false;
-        this.isReloading = false;
+
+        this.reset();
     }
     isEmpty() {
         return this.bulletCount <= 0;
@@ -39,6 +39,11 @@ class Weapon {
         this.bulletCount--;
         this.load();
         return true;
+    }
+    reset() {
+        this.bulletCount = this.maxBulletCount;
+        this.isLoading = false;
+        this.isReloading = false;
     }
 }
 

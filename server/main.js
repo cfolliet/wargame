@@ -31,8 +31,7 @@ const defaultMap = {
     ]
 };
 
-const board = new Board;
-board.setMap(defaultMap);
+const board = new Board(defaultMap, 10);
 board.onChange = () => {
     const data = { type: 'update-board', value: board.serialize() };
     [...clients].forEach(client => {
@@ -43,6 +42,13 @@ board.onChange = () => {
 const server = new WebSocket.Server({ port: 9000 });
 
 const clients = new Set;
+
+setInterval(() => {
+    const data = board.serialize();
+    for (let client of clients) {
+        client.send({ type: 'update-board', value: data });
+    }
+}, 15);
 
 class Client {
     constructor(conn, clients) {
@@ -64,7 +70,7 @@ class Client {
     send(data) {
         if (typeof data.value === 'object') {
             data.value.currentPlayerId = this.playerId;
-            data.value.serverTimestamp = Date.now();
+            data.value.time = Date.now();
         }
         const msg = JSON.stringify(data);
         this.conn.send(msg);

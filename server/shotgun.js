@@ -7,7 +7,6 @@ class Shotgun extends Weapon {
         super({
             name: 'shotgun',
             range: 7000,
-            bulletCount: 5,
             maxBulletCount: 5,
             reloadDuration: 10000,
             loadDuration: 1000,

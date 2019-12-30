@@ -8,12 +8,10 @@ class Board {
 
         this.currentPlayerId = null;
         this.players = new Map;
+        this.zombies = new Map;
         this.bullets = new Set;
         this.walls = [];
         this.respawns = [];
-
-        this.serverTimestamp = null;
-        this.localServerTimestampDiff = 0;
 
         this.roundStartTimestamp = null;
         this.roundDuration = null;
@@ -50,6 +48,11 @@ class Board {
         Object.assign(player, data);
         this.players.set(player.id, player);
     }
+    loadZombie(data) {
+        const zombie = new Zombie();
+        Object.assign(zombie, data);
+        this.zombies.set(zombie.id, zombie);
+    }
     loadBullet(data) {
         const bullet = new Bullet(data.player, data.vel);
         Object.assign(bullet, data);
@@ -59,15 +62,11 @@ class Board {
         this.walls = [];
         this.respawns = [];
         map.walls.forEach(w => {
-            const wall = new Rect(w.size.x, w.size.y);
-            wall.pos.x = w.pos.x;
-            wall.pos.y = w.pos.y;
+            const wall = new Rect(w.pos.x, w.pos.y, w.size.x, w.size.y);
             this.walls.push(wall);
         });
         map.respawns.forEach(r => {
-            const respawn = new Rect(r.size.x, r.size.y);
-            respawn.pos.x = r.pos.x;
-            respawn.pos.y = r.pos.y;
+            const respawn = new Rect(r.pos.x, r.pos.y, r.size.x, r.size.y);
             this.respawns.push(respawn);
         });
     }
@@ -75,14 +74,15 @@ class Board {
         this._canvas.width = data.width * this.scale;
         this._canvas.height = data.height * this.scale;
         this._context.scale(this.scale, this.scale);
+        this.time = data.time;
         this.roundStartTimestamp = data.roundStartTimestamp;
         this.roundDuration = data.roundDuration;
         this.roundResultDuration = data.roundResultDuration;
         this.currentPlayerId = data.currentPlayerId;
-        this.serverTimestamp = data.serverTimestamp;
-        this.localServerTimestampDiff = this.serverTimestamp - Date.now();
         this.players.clear();
         data.players.forEach(p => this.loadPlayer(p));
+        this.zombies.clear();
+        data.zombies.forEach(z => this.loadZombie(z));
         this.bullets.clear();
         data.bullets.forEach(b => this.loadBullet(b));
         this.loadMap(data);
@@ -90,6 +90,7 @@ class Board {
     clear() {
         //this._context.fillStyle = '#000';
         //this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
+        this._context.font = "20px monospace";
         var image = document.getElementById('background-image');
         this._context.drawImage(image, 0, 0);
     }
@@ -103,11 +104,11 @@ class Board {
     }
     drawTime() {
         this._context.fillStyle = '#fff';
-        if (this.roundStartTimestamp + this.roundDuration > Date.now()) {
-            const roundDuration = new Date(1000 * Math.round((this.roundStartTimestamp + this.roundDuration - Date.now() + this.localServerTimestampDiff) / 1000)); // round to nearest second
+        if (this.roundStartTimestamp + this.roundDuration > this.time) {
+            const roundDuration = new Date(1000 * Math.round((this.roundStartTimestamp + this.roundDuration - this.time) / 1000)); // round to nearest second
             this._context.fillText('Time left: ' + roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0'), this._canvas.width / this.scale - 115, 20, 100);
         } else {
-            const waitDuration = new Date(1000 * Math.round((this.roundStartTimestamp + this.roundDuration + this.roundResultDuration - Date.now() + this.localServerTimestampDiff) / 1000)); // round to nearest second
+            const waitDuration = new Date(1000 * Math.round((this.roundStartTimestamp + this.roundDuration + this.roundResultDuration - this.time) / 1000)); // round to nearest second
             this._context.fillText('New round in: ' + waitDuration.getUTCMinutes() + ':' + waitDuration.getUTCSeconds().toString().padStart(2, '0'), this._canvas.width / 3 / this.scale, this._canvas.width / 2 / this.scale, 100);
         }
     }
@@ -143,10 +144,13 @@ class Board {
             this._context.fillStyle = '#fff';
             const player = this.currentPlayer();
             const weapon = player.weapons[player.currentWeaponIndex];
+            var image = document.getElementById(weapon.name);
             if (weapon.isReloading) {
-                this._context.fillText(`${weapon.name}: RELOADING...`, 100, this._canvas.height / this.scale - 20);
+                this._context.drawImage(image, 100, this._canvas.height / this.scale - 40, 30, 30);
+                this._context.fillText(`RELOADING...`, 140, this._canvas.height / this.scale - 20);
             } else {
-                this._context.fillText(`${weapon.name}: ${weapon.bulletCount}/${weapon.maxBulletCount}`, 100, this._canvas.height / this.scale - 20);
+                this._context.drawImage(image, 100, this._canvas.height / this.scale - 40, 30, 30);
+                this._context.fillText(`${weapon.bulletCount}/${weapon.maxBulletCount}`, 140, this._canvas.height / this.scale - 20);
             }
         }
     }
@@ -154,6 +158,7 @@ class Board {
         this.clear();
         //this.drawRespawns();
         this.players.forEach(player => this.drawRect(player, player.color, true));
+        this.zombies.forEach(zombie => this.drawRect(zombie, zombie.color, false));
         this.bullets.forEach(bullet => this.drawRect(bullet));
         //this.walls.forEach(wall => this.drawRect(wall));
         this.drawScore(this.players);
