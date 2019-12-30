@@ -6,6 +6,7 @@ class Weapon {
         this.maxBulletCount = options.maxBulletCount;
         this.loadDuration = options.loadDuration;
         this.reloadDuration = options.reloadDuration;
+        this.loadTimestamp = Date.now();
 
         this.reset();
     }
@@ -14,12 +15,14 @@ class Weapon {
     }
     load() {
         this.isLoading = true;
+        this.loadTimestamp = Date.now();
         setTimeout(() => {
             this.isLoading = false;
         }, this.loadDuration)
     }
     reload() {
         this.isReloading = true;
+        this.loadTimestamp = Date.now();
         setTimeout(() => {
             this.bulletCount = this.maxBulletCount;
             this.isReloading = false;
