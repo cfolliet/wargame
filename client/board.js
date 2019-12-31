@@ -1,4 +1,10 @@
-class Board {
+import Player from './player.js';
+import Zombie from './zombie.js';
+import Bullet from './bullet.js';
+import Vec from './vec.js';
+import Rect from './rect.js';
+
+export default class Board {
     constructor(canvas) {
         this._canvas = canvas;
         this._context = canvas.getContext('2d');

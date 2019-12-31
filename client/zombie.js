@@ -1,4 +1,7 @@
-class Zombie extends Rect {
+import Rect from './rect.js';
+import Vec from './vec.js';
+
+export default class Zombie extends Rect {
     constructor() {
         super(0, 0, 10, 10);
         this.vel = new Vec;

@@ -1,4 +1,4 @@
-class InGameActionHandler {
+export default class InGameActionHandler {
     constructor(board, webSocketServer) {
         this.board = board;
         this.webSocketServer = webSocketServer;

@@ -1,3 +1,6 @@
+import WebSocketManager from './webSocketManager.js';
+import InGameActionHandler from './inGameActionHandler.js';
+import Board from './board.js';
 
 const canvas = document.getElementById('canvas');
 let board = null;
@@ -39,7 +42,7 @@ function onOpen() {
 function onReceive(message) {
     const data = JSON.parse(message);
 
-    if (data.type != 'pong') console.log('msg', data);
+    //if (data.type != 'pong') console.log('msg', data);
 
     if (data.type == 'update-board') {
         board.load(data.value);

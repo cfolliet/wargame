@@ -1,4 +1,4 @@
-class WebSocketManager {
+export default class WebSocketManager {
     constructor(serverIp, openCallback, receiveCallback) {
         this.conn = new WebSocket(serverIp);
 

@@ -1,4 +1,7 @@
-class Player extends Rect {
+import Rect from './rect.js';
+import Vec from './vec.js';
+
+export default class Player extends Rect {
     constructor(name = '') {
         super(0, 0, 10, 10);
         this.vel = new Vec;

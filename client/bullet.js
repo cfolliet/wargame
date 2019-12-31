@@ -1,4 +1,7 @@
-class Bullet extends Rect {
+import Rect from './rect.js';
+import Vec from './vec.js';
+
+export default class Bullet extends Rect {
     constructor(player, vel) {
         super(0, 0, 2, 2);
         this.vel = vel;
