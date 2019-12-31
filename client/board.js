@@ -3,6 +3,7 @@ import Zombie from './zombie.js';
 import Bullet from './bullet.js';
 import Vec from './vec.js';
 import Rect from './rect.js';
+import { loadImage } from './loader.js';
 
 export default class Board {
     constructor(canvas) {
@@ -33,7 +34,9 @@ export default class Board {
             lastTime = millis;
             requestAnimationFrame(this._frameCallback);
         };
-        requestAnimationFrame(this._frameCallback);
+
+        this.ressources = new Map;
+        this.loadResources().then(() => requestAnimationFrame(this._frameCallback));
     }
     currentPlayer() {
         return this.players.get(this.currentPlayerId);
@@ -97,7 +100,7 @@ export default class Board {
         //this._context.fillStyle = '#000';
         //this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
         this._context.font = "20px monospace";
-        var image = document.getElementById('background-image');
+        var image = this.ressources.get('map.png');
         this._context.drawImage(image, 0, 0);
     }
     drawRect(rect, color = '#fff', stroke) {
@@ -163,7 +166,7 @@ export default class Board {
             this._context.fillStyle = '#fff';
             const player = this.currentPlayer();
             const weapon = player.weapons[player.currentWeaponIndex];
-            var image = document.getElementById(weapon.name);
+            var image = this.ressources.get(weapon.name + '.png');
             const loadingDone = this.time - weapon.loadTimestamp;
             let loadingPercentage = 0;
 
@@ -204,5 +207,19 @@ export default class Board {
             bullet.collide(this)
         });
         this.draw();
+    }
+    loadResources() {
+        const urls = [
+            'map.png',
+            'machinegun.png',
+            'pistol.png',
+            'shotgun.png'
+        ];
+
+        const promises = [];
+        urls.forEach(url => {
+            promises.push(loadImage(url).then((image) => this.ressources.set(url, image)));
+        });
+        return Promise.all(promises);
     }
 }
