@@ -24,7 +24,7 @@ function drawWeapon(board) {
         board._context.fillStyle = '#fff';
         const player = board.currentPlayer();
         const weapon = player.weapons[player.currentWeaponIndex];
-        var image = board.ressources.get(weapon.name + '.png');
+        var image = board.ressources.get('/img/' + weapon.name + '.png');
         const loadingDone = board.time - weapon.loadTimestamp;
         let loadingPercentage = 0;
 

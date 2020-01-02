@@ -97,15 +97,11 @@ export default class Board {
         data.bullets.forEach(b => this.loadBullet(b));
         this.loadMap(data);
     }
-    clear() {
-        //this._context.fillStyle = '#000';
-        //this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
-        this._context.font = "20px monospace";
-        var image = this.ressources.get('map.png');
-        this._context.drawImage(image, 0, 0);
-    }
     draw() {
-        this.clear();
+        this._context.font = "20px monospace";
+        var image = this.ressources.get('/img/map.png');
+        this._context.drawImage(image, 0, 0);
+
         this.players.forEach(player => player.draw(this._context));
         this.zombies.forEach(zombie => zombie.draw(this._context));
         this.bullets.forEach(bullet => bullet.draw(this._context));
@@ -124,10 +120,10 @@ export default class Board {
     }
     loadResources() {
         const urls = [
-            'map.png',
-            'machinegun.png',
-            'pistol.png',
-            'shotgun.png'
+            '/img/map.png',
+            '/img/machinegun.png',
+            '/img/pistol.png',
+            '/img/shotgun.png'
         ];
 
         const promises = [];
