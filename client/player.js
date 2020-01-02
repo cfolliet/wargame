@@ -2,13 +2,9 @@ import Rect from './rect.js';
 import Vec from './vec.js';
 
 export default class Player extends Rect {
-    constructor(name = '') {
-        super(0, 0, 10, 10);
-        this.vel = new Vec;
-        this.kills = 0;
-        this.deaths = 0;
-        this.name = name;
-        this.color = 'grey';
+    constructor(data) {
+        super();
+        Object.assign(this, data);
     }
     update(dt) {
         const vel = new Vec(this.vel.x, this.vel.y);

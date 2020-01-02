@@ -2,11 +2,9 @@ import Rect from './rect.js';
 import Vec from './vec.js';
 
 export default class Zombie extends Rect {
-    constructor() {
-        super(0, 0, 10, 10);
-        this.vel = new Vec;
-        this.color = 'red';
-        this.health = null;
+    constructor(data) {
+        super();        
+        Object.assign(this, data);
     }
     update(dt) {
         const target = [...this.board.players][0][1].pos;

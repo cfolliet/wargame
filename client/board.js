@@ -52,16 +52,6 @@ export default class Board {
     movePlayer(axis, direction) {
         this.currentPlayer().vel[axis] = direction;
     }
-    loadPlayer(data) {
-        const player = new Player();
-        Object.assign(player, data);
-        this.players.set(player.id, player);
-    }
-    loadZombie(data) {
-        const zombie = new Zombie();
-        Object.assign(zombie, data);
-        this.zombies.set(zombie.id, zombie);
-    }
     loadBullet(data) {
         const bullet = new Bullet(data.player, data.vel);
         Object.assign(bullet, data);
@@ -90,9 +80,15 @@ export default class Board {
         this.roundResultDuration = data.roundResultDuration;
         this.currentPlayerId = data.currentPlayerId;
         this.players.clear();
-        data.players.forEach(p => this.loadPlayer(p));
+        data.players.forEach(p => {
+            const player = new Player(p);
+            this.players.set(player.id, player);
+        });
         this.zombies.clear();
-        data.zombies.forEach(z => this.loadZombie(z));
+        data.zombies.forEach(z => {
+            const zombie = new Zombie(z);
+            this.zombies.set(zombie.id, zombie);
+        });
         this.bullets.clear();
         data.bullets.forEach(b => this.loadBullet(b));
         this.loadMap(data);
