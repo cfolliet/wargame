@@ -3,6 +3,7 @@ import InGameActionHandler from './inGameActionHandler.js';
 import Board from './board.js';
 
 const canvas = document.getElementById('canvas');
+const userSettings = getUserSettings();
 let board = null;
 
 async function getServerConfig() {
@@ -18,21 +19,29 @@ function getUserSettings() {
         settings = JSON.parse(stringSettings);
     }
 
+    document.getElementById('name').value = settings.name,
+        document.querySelectorAll('.key').forEach(keySetting => {
+            const action = keySetting.getAttribute('data-action');
+            keySetting.innerHTML = String.fromCharCode(settings.keyMapping[action]);
+            keySetting.value = settings.keyMapping[action];
+
+        });
+
     return settings;
 }
 
 let webSocketServer = null;
-getServerConfig().then( config => {
+getServerConfig().then(config => {
     const webSocketServerIp = `ws://${config.webSocketServerIp}:9000`;
     webSocketServer = new WebSocketManager(webSocketServerIp, onOpen, onReceive);
 });
 
 function onOpen() {
     board = new Board(canvas);
-    webSocketServer.send({ type: 'save-settings', value: getUserSettings() });
+    webSocketServer.send({ type: 'save-settings', value: userSettings });
 
     const actionHandler = new InGameActionHandler(board, webSocketServer);
-    actionHandler.registerListeners();
+    actionHandler.registerListeners(userSettings.keyMapping);
 
     setInterval(() => {
         webSocketServer.send({ type: 'ping', value: performance.now() });
@@ -55,6 +64,7 @@ function onReceive(message) {
 
 const settingsToggler = document.getElementById('settings-toggler');
 const settings = document.getElementById('settings');
+const keySettings = document.querySelectorAll('.key');
 const saveSettings = document.getElementById('save-settings');
 
 settingsToggler.addEventListener('click', () => {
@@ -68,12 +78,31 @@ settingsToggler.addEventListener('click', () => {
 });
 
 saveSettings.addEventListener('click', () => {
+    const keyMapping = {};
+    keySettings.forEach(keySetting => {
+        keyMapping[keySetting.getAttribute('data-action')] = keySetting.value;
+    })
+
     const settings = {
         type: 'save-settings',
         value: {
-            name: document.getElementById('name').value
+            name: document.getElementById('name').value,
+            keyMapping: keyMapping
         }
     }
+
     localStorage.setItem('settings', JSON.stringify(settings.value));
     webSocketServer.send(settings);
+});
+
+keySettings.forEach(keySetting => {
+    keySetting.addEventListener('click', () => {
+        keySetting.innerHTML = '???';
+        const listenKey = event => {
+            keySetting.innerHTML = event.key;
+            keySetting.value = event.keyCode;
+            document.removeEventListener('keyup', listenKey);
+        }
+        document.addEventListener('keyup', listenKey);
+    });
 });

@@ -8,28 +8,28 @@ export default class InGameActionHandler {
         this.keysPressed = new Set;
     }
 
-    registerListeners() {
+    registerListeners(keyMapping) {
         document.addEventListener("keydown", event => {
             if (this.keysPressed.has(event.keyCode)) {
                 return;
             }
 
             this.keysPressed.add(event.keyCode);
-            if (event.keyCode == 37 || event.keyCode == 81) {
+            if (keyMapping['left'] == event.keyCode) {
                 this.webSocketServer.send({ type: 'move-player', value: { axis: 'x', direction: -1 } });
                 this.board.movePlayer('x', -1);
-            } else if (event.keyCode == 38 || event.keyCode == 90) {
+            } else if (keyMapping['top'] == event.keyCode) {
                 this.webSocketServer.send({ type: 'move-player', value: { axis: 'y', direction: -1 } });
                 this.board.movePlayer('y', -1);
-            } else if (event.keyCode == 39 || event.keyCode == 68) {
+            } else if (keyMapping['right'] == event.keyCode) {
                 this.webSocketServer.send({ type: 'move-player', value: { axis: 'x', direction: 1 } });
                 this.board.movePlayer('x', 1);
-            } else if (event.keyCode == 40 || event.keyCode == 83) {
+            } else if (keyMapping['bottom'] == event.keyCode) {
                 this.webSocketServer.send({ type: 'move-player', value: { axis: 'y', direction: 1 } });
                 this.board.movePlayer('y', 1);
-            } else if (event.keyCode == 82) {
+            } else if (keyMapping['reload'] == event.keyCode) {
                 this.webSocketServer.send({ type: 'reload-weapon' });
-            } else if (event.keyCode == 69) {
+            } else if (keyMapping['nextweapon'] == event.keyCode) {
                 const currentPlayer = this.board.currentPlayer();
                 const nextWeaponIndex = (currentPlayer.currentWeaponIndex + 1) % currentPlayer.weapons.length;
                 this.webSocketServer.send({ type: 'change-weapon', value: nextWeaponIndex });
@@ -38,16 +38,16 @@ export default class InGameActionHandler {
 
         document.addEventListener("keyup", event => {
             this.keysPressed.delete(event.keyCode);
-            if (event.keyCode == 37 || event.keyCode == 81) {
+            if (keyMapping['left'] == event.keyCode) {
                 this.webSocketServer.send({ type: 'move-player', value: { axis: 'x', direction: 0 } });
                 this.board.movePlayer('x', 0);
-            } else if (event.keyCode == 38 || event.keyCode == 90) {
+            } else if (keyMapping['top'] == event.keyCode) {
                 this.webSocketServer.send({ type: 'move-player', value: { axis: 'y', direction: 0 } });
                 this.board.movePlayer('y', 0);
-            } else if (event.keyCode == 39 || event.keyCode == 68) {
+            } else if (keyMapping['right'] == event.keyCode) {
                 this.webSocketServer.send({ type: 'move-player', value: { axis: 'x', direction: 0 } });
                 this.board.movePlayer('x', 0);
-            } else if (event.keyCode == 40 || event.keyCode == 83) {
+            } else if (keyMapping['bottom'] == event.keyCode) {
                 this.webSocketServer.send({ type: 'move-player', value: { axis: 'y', direction: 0 } });
                 this.board.movePlayer('y', 0);
             }

@@ -20,8 +20,15 @@
         <canvas id="canvas" width="1" height="1"> </canvas>
     </div>
     <div id="settings">
-        <label>Name:</label><input type="text" id="name">
-        <button id="save-settings">Save</button>
+        <div><label>NAME</label><input type="text" id="name"></div>
+        <div><label>TOP</label><button class="key" data-action="top" value="90">z</button></div>
+        <div><label>BOTTOM</label><button class="key" data-action="bottom" value="83">s</button></div>
+        <div><label>LEFT</label><button class="key" data-action="left" value="81">q</button></div>
+        <div><label>RIGHT</label><button class="key" data-action="right" value="68">d</button></div>
+        <div><label>RELOAD</label><button class="key" data-action="reload" value="82">r</button></div>
+        <div><label>NEXT WEAPON</label><button class="key" data-action="nextweapon" value="69">e</button></div>
+
+        <div><button id="save-settings">Save</button></div>
     </div>
     <script type="module" src="main.js"></script>
 </body>
