@@ -6,7 +6,7 @@ class Machinegun extends Weapon {
         super({
             name: 'machinegun',
             maxBulletCount: 30,
-            reloadDuration: 5000,
+            reloadDuration: 3000,
             loadDuration: 100,
         });
 

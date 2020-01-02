@@ -7,7 +7,7 @@ class Pistol extends Weapon {
             name: 'pistol',
             maxBulletCount: 15,
             reloadDuration: 5000,
-            loadDuration: 500
+            loadDuration: 300
         });
 
     }

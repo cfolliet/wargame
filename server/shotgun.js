@@ -6,8 +6,8 @@ class Shotgun extends Weapon {
     constructor() {
         super({
             name: 'shotgun',
-            maxBulletCount: 5,
-            reloadDuration: 10000,
+            maxBulletCount: 7,
+            reloadDuration: 5000,
             loadDuration: 1000,
         });
 
