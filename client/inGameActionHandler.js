@@ -73,7 +73,6 @@ export default class InGameActionHandler {
             const currentPlayer = this.board.currentPlayer();
             const tempIndex = event.deltaY > 0 ? currentPlayer.currentWeaponIndex + 1 : currentPlayer.currentWeaponIndex + currentPlayer.weapons.length - 1;
             const nextWeaponIndex = tempIndex % currentPlayer.weapons.length;
-            console.log(nextWeaponIndex)
             this.webSocketServer.send({ type: 'change-weapon', value: nextWeaponIndex });
         });
         document.addEventListener('mousemove', event => {

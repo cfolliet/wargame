@@ -46,4 +46,8 @@ export default class Zombie extends Rect {
             });
         }
     }
+    draw(context) {
+        context.fillStyle = this.color;
+        context.fillRect(this.left, this.top, this.size.x, this.size.y);
+    }
 }

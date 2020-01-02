@@ -187,9 +187,9 @@ export default class Board {
     draw() {
         this.clear();
         //this.drawplayerSpawns();
-        this.players.forEach(player => this.drawRect(player, player.color, true));
-        this.zombies.forEach(zombie => this.drawRect(zombie, zombie.color, false));
-        this.bullets.forEach(bullet => this.drawRect(bullet));
+        this.players.forEach(player => player.draw(this._context));
+        this.zombies.forEach(zombie => zombie.draw(this._context));
+        this.bullets.forEach(bullet => bullet.draw(this._context));
         //this.walls.forEach(wall => this.drawRect(wall));
         this.drawScore(this.players);
         this.drawInfos();

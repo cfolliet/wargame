@@ -44,4 +44,8 @@ export default class Bullet extends Rect {
             });
         }
     }
+    draw(context) {
+        context.fillStyle = '#fff';
+        context.fillRect(this.left, this.top, this.size.x, this.size.y);
+    }
 }

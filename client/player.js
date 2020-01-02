@@ -8,7 +8,7 @@ export default class Player extends Rect {
         this.kills = 0;
         this.deaths = 0;
         this.name = name;
-        this.color =  'grey';
+        this.color = 'grey';
     }
     update(dt) {
         const vel = new Vec(this.vel.x, this.vel.y);
@@ -43,5 +43,11 @@ export default class Player extends Rect {
                 }
             });
         }
+    }
+    draw(context) {
+        context.fillStyle = this.color;
+        context.fillRect(this.left, this.top, this.size.x, this.size.y);
+        context.strokeStyle = '#fff';
+        context.strokeRect(this.left, this.top, this.size.x, this.size.y);
     }
 }
