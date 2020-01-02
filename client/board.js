@@ -52,18 +52,6 @@ export default class Board {
     movePlayer(axis, direction) {
         this.currentPlayer().vel[axis] = direction;
     }
-    loadMap(map) {
-        this.walls = [];
-        this.playerSpawns = [];
-        map.walls.forEach(w => {
-            const wall = new Rect(w.pos.x, w.pos.y, w.size.x, w.size.y);
-            this.walls.push(wall);
-        });
-        map.playerSpawns.forEach(r => {
-            const respawn = new Rect(r.pos.x, r.pos.y, r.size.x, r.size.y);
-            this.playerSpawns.push(respawn);
-        });
-    }
     load(data) {
         this.scale = Math.min((window.innerHeight - 80) / data.height, (window.innerWidth - 80) / data.width);
         this._canvas.width = data.width * this.scale;
@@ -74,22 +62,27 @@ export default class Board {
         this.roundDuration = data.roundDuration;
         this.roundResultDuration = data.roundResultDuration;
         this.currentPlayerId = data.currentPlayerId;
-        this.players.clear();
-        data.players.forEach(p => {
+
+        this.players = new Map(data.players.map(p => {
             const player = new Player(p);
-            this.players.set(player.id, player);
-        });
-        this.zombies.clear();
-        data.zombies.forEach(z => {
+            return [player.id, player];
+        }));
+
+        this.zombies = new Map(data.zombies.map(z => {
             const zombie = new Zombie(z);
-            this.zombies.set(zombie.id, zombie);
+            return [zombie.id, zombie];
+        }));
+
+        this.bullets = new Set(data.bullets.map(b => {
+            return new Bullet(b);
+        }));
+
+        this.walls = map.walls.map(w => {
+            return new Rect(w.pos.x, w.pos.y, w.size.x, w.size.y);
         });
-        this.bullets.clear();
-        data.bullets.forEach(b => {
-            const bullet = new Bullet(b);
-            this.bullets.add(bullet);
+        this.playerSpawns = map.playerSpawns.map(r => {
+            return new Rect(r.pos.x, r.pos.y, r.size.x, r.size.y);
         });
-        this.loadMap(data);
     }
     draw() {
         this._context.font = "20px monospace";
