@@ -2,12 +2,9 @@ import Rect from './rect.js';
 import Vec from './vec.js';
 
 export default class Bullet extends Rect {
-    constructor(player, vel) {
-        super(0, 0, 2, 2);
-        this.vel = vel;
-        this.player = player;
-        this.pos.x = player.pos.x;
-        this.pos.y = player.pos.y;
+    constructor(data) {
+        super();
+        Object.assign(this, data);
     }
     update(dt) {
         const vel = new Vec(this.vel.x, this.vel.y);

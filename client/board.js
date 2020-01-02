@@ -52,11 +52,6 @@ export default class Board {
     movePlayer(axis, direction) {
         this.currentPlayer().vel[axis] = direction;
     }
-    loadBullet(data) {
-        const bullet = new Bullet(data.player, data.vel);
-        Object.assign(bullet, data);
-        this.bullets.add(bullet);
-    }
     loadMap(map) {
         this.walls = [];
         this.playerSpawns = [];
@@ -90,7 +85,10 @@ export default class Board {
             this.zombies.set(zombie.id, zombie);
         });
         this.bullets.clear();
-        data.bullets.forEach(b => this.loadBullet(b));
+        data.bullets.forEach(b => {
+            const bullet = new Bullet(b);
+            this.bullets.add(bullet);
+        });
         this.loadMap(data);
     }
     draw() {
