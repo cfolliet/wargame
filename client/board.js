@@ -4,6 +4,7 @@ import Bullet from './bullet.js';
 import Vec from './vec.js';
 import Rect from './rect.js';
 import { loadImage } from './loader.js';
+import drawHud from './hud.js';
 
 export default class Board {
     constructor(canvas) {
@@ -103,99 +104,12 @@ export default class Board {
         var image = this.ressources.get('map.png');
         this._context.drawImage(image, 0, 0);
     }
-    drawRect(rect, color = '#fff', stroke) {
-        this._context.fillStyle = color;
-        this._context.fillRect(rect.left, rect.top, rect.size.x, rect.size.y);
-        if (stroke) {
-            this._context.strokeStyle = '#fff';
-            this._context.strokeRect(rect.left, rect.top, rect.size.x, rect.size.y);
-        }
-    }
-    drawTime() {
-        this._context.fillStyle = '#fff';
-        if (this.roundStartTimestamp + this.roundDuration > this.time) {
-            this._context.textAlign = 'right';
-            const roundDuration = new Date(1000 * Math.round((this.roundStartTimestamp + this.roundDuration - this.time) / 1000)); // round to nearest second
-            const text = 'Time left: ' + roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0');
-            this._context.fillText(text, this._canvas.width / this.scale, 20);
-        } else {
-            this._context.font = '30px monospace';
-            this._context.textAlign = 'center';
-            const waitDuration = new Date(1000 * Math.round((this.roundStartTimestamp + this.roundDuration + this.roundResultDuration - this.time) / 1000)); // round to nearest second
-            const text = 'NEXT ROUND IN ' + waitDuration.getUTCMinutes() + ':' + waitDuration.getUTCSeconds().toString().padStart(2, '0');
-            this._context.fillText(text, this._canvas.width / this.scale / 2, this._canvas.height / this.scale / 2);
-        }
-    }
-    drawScore(players) {
-        this._context.fillStyle = '#fff';
-        [...players.values()].sort((a, b) => b.kills - a.kills).forEach((player, index) => {
-            this._context.fillStyle = player.color;
-            this._context.fillRect(this._canvas.width / this.scale - 115, 32 + index * 20, 10, 10);
-            this._context.strokeStyle = '#fff';
-            this._context.strokeRect(this._canvas.width / this.scale - 115, 32 + index * 20, 10, 10);
-            this._context.fillText(`${player.name}: ${player.kills}/${player.deaths}`, this._canvas.width / this.scale - 100, 40 + index * 20, 100);
-        });
-    }
-    drawplayerSpawns() {
-        this.playerSpawns.forEach(respawn => {
-            this._context.fillStyle = 'violet';
-            this._context.fillRect(respawn.pos.x, respawn.pos.y, respawn.size.x, respawn.size.y);
-        });
-    }
-    drawInfos() {
-        this._context.fillStyle = '#fff';
-        this._context.fillText('FPS: ' + this.fps, 20, 20);
-        this._context.fillText('Ping: ' + (this.ping | 0), 20, 35);
-    }
-    drawHealth() {
-        if (this.currentPlayer()) {
-            this._context.fillStyle = '#fff';
-            this._context.fillText('\u2764 ' + this.currentPlayer().health, 20, this._canvas.height / this.scale - 20);
-
-            if (this.currentHealth > this.currentPlayer().health) {
-                this._context.fillStyle = 'red';
-                this._context.fillRect(0, 0, this._canvas.width / this.scale, this._canvas.height / this.scale);
-                setTimeout(() => this.currentHealth = this.currentPlayer().health, 68);
-            } else {
-                this.currentHealth = this.currentPlayer().health;
-            }
-        }
-    }
-    drawWeapon() {
-        if (this.currentPlayer()) {
-            this._context.fillStyle = '#fff';
-            const player = this.currentPlayer();
-            const weapon = player.weapons[player.currentWeaponIndex];
-            var image = this.ressources.get(weapon.name + '.png');
-            const loadingDone = this.time - weapon.loadTimestamp;
-            let loadingPercentage = 0;
-
-            this._context.drawImage(image, 100, this._canvas.height / this.scale - 40, 30, 30);
-
-            if (weapon.isReloading) {
-                this._context.fillText(`RELOADING`, 140, this._canvas.height / this.scale - 20);
-                loadingPercentage = loadingDone * 100 / weapon.reloadDuration;
-            } else {
-                this._context.fillText(`${weapon.bulletCount}/${weapon.maxBulletCount}`, 140, this._canvas.height / this.scale - 20);
-                loadingPercentage = loadingDone * 100 / weapon.loadDuration;
-            }
-
-            let width = Math.max(0, 100 - loadingPercentage);
-            this._context.fillRect(140, this._canvas.height / this.scale - 15, width, 5);
-        }
-    }
     draw() {
         this.clear();
-        //this.drawplayerSpawns();
         this.players.forEach(player => player.draw(this._context));
         this.zombies.forEach(zombie => zombie.draw(this._context));
         this.bullets.forEach(bullet => bullet.draw(this._context));
-        //this.walls.forEach(wall => this.drawRect(wall));
-        this.drawScore(this.players);
-        this.drawInfos();
-        this.drawHealth();
-        this.drawWeapon();
-        this.drawTime();
+        drawHud(this);
     }
     update(dt) {
         this.players.forEach(player => {
