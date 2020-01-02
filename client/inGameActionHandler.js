@@ -58,7 +58,7 @@ export default class InGameActionHandler {
             this.webSocketServer.send({ type: 'fire', value: this.fireTarget });
         }
 
-        document.addEventListener('click', event => {            
+        document.addEventListener('click', event => {
             event.preventDefault();
             const rect = canvas.getBoundingClientRect();
             this.fireTarget = { x: (event.clientX - rect.left) / this.board.scale, y: (event.clientY - rect.top) / this.board.scale };
@@ -67,6 +67,14 @@ export default class InGameActionHandler {
         document.addEventListener('contextmenu', event => {
             event.preventDefault();
             this.webSocketServer.send({ type: 'reload-weapon' });
+        });
+        document.addEventListener('wheel', event => {
+            event.preventDefault();
+            const currentPlayer = this.board.currentPlayer();
+            const tempIndex = event.deltaY > 0 ? currentPlayer.currentWeaponIndex + 1 : currentPlayer.currentWeaponIndex + currentPlayer.weapons.length - 1;
+            const nextWeaponIndex = tempIndex % currentPlayer.weapons.length;
+            console.log(nextWeaponIndex)
+            this.webSocketServer.send({ type: 'change-weapon', value: nextWeaponIndex });
         });
         document.addEventListener('mousemove', event => {
             const rect = canvas.getBoundingClientRect();
