@@ -44,8 +44,10 @@ export default class Zombie extends Rect {
             });
         }
     }
-    draw(context) {
-        context.fillStyle = this.color;
-        context.fillRect(this.left, this.top, this.size.x, this.size.y);
+    draw(context, spriteManager) {
+        const image = spriteManager.get('/img/zombie.png');
+        context.drawImage(image, this.left, this.top, this.size.x, this.size.y);
+        //context.fillStyle = this.color;
+        //context.fillRect(this.left, this.top, this.size.x, this.size.y);
     }
 }

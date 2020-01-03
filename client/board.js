@@ -90,7 +90,7 @@ export default class Board {
         this._context.drawImage(image, 0, 0);
 
         this.players.forEach(player => player.draw(this._context));
-        this.zombies.forEach(zombie => zombie.draw(this._context));
+        this.zombies.forEach(zombie => zombie.draw(this._context, this.spriteManager));
         this.bullets.forEach(bullet => bullet.draw(this._context));
         drawHud(this);
     }
