@@ -76,7 +76,7 @@ export default class InGameActionHandler {
             if (event.button == 0) {
                 fire();
                 this.fireInterval = setInterval(fire, 50);
-            } else if(event.button == 2){
+            } else if (event.button == 2) {
                 this.webSocketServer.send({ type: 'reload-weapon' });
             }
         });
