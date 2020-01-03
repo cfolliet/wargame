@@ -3,13 +3,14 @@ import Zombie from './zombie.js';
 import Bullet from './bullet.js';
 import Vec from './vec.js';
 import Rect from './rect.js';
-import { loadImage } from './loader.js';
 import drawHud from './hud.js';
+import SpriteManager from './spriteManager.js';
 
 export default class Board {
     constructor(canvas) {
         this._canvas = canvas;
         this._context = canvas.getContext('2d');
+        this.spriteManager = new SpriteManager();
 
         this.currentPlayerId = null;
         this.players = new Map;
@@ -36,8 +37,7 @@ export default class Board {
             requestAnimationFrame(this._frameCallback);
         };
 
-        this.ressources = new Map;
-        this.loadResources().then(() => requestAnimationFrame(this._frameCallback));
+        this.spriteManager.load().then(() => requestAnimationFrame(this._frameCallback));
     }
     currentPlayer() {
         return this.players.get(this.currentPlayerId);
@@ -86,7 +86,7 @@ export default class Board {
     }
     draw() {
         this._context.font = "20px monospace";
-        var image = this.ressources.get('/img/map.png');
+        var image = this.spriteManager.get('/img/map.png');
         this._context.drawImage(image, 0, 0);
 
         this.players.forEach(player => player.draw(this._context));
@@ -104,18 +104,5 @@ export default class Board {
             bullet.collide(this)
         });
         this.draw();
-    }
-    loadResources() {
-        const promises = [];
-        [
-            '/img/map.png',
-            '/img/machinegun.png',
-            '/img/pistol.png',
-            '/img/shotgun.png',
-            '/img/zombie.png'
-        ].forEach(url => {
-            promises.push(loadImage(url).then((image) => this.ressources.set(url, image)));
-        });
-        return Promise.all(promises);
     }
 }

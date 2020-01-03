@@ -13,10 +13,9 @@ async function getServerConfig() {
     return config;
 }
 
-let webSocketServer = null;
 getServerConfig().then(config => {
     const webSocketServerIp = `ws://${config.webSocketServerIp}:9000`;
-    webSocketServer = new WebSocketManager(webSocketServerIp, onOpen, onReceive);
+    const webSocketServer = new WebSocketManager(webSocketServerIp, onOpen, onReceive);
 
     function onOpen() {
         const actionHandler = new InGameActionHandler(board, webSocketServer);
