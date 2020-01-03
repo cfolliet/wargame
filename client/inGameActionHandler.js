@@ -58,15 +58,8 @@ export default class InGameActionHandler {
             this.webSocketServer.send({ type: 'fire', value: this.fireTarget });
         }
 
-        document.addEventListener('click', event => {
-            event.preventDefault();
-            const rect = canvas.getBoundingClientRect();
-            this.fireTarget = { x: (event.clientX - rect.left) / this.board.scale, y: (event.clientY - rect.top) / this.board.scale };
-            fire();
-        });
         document.addEventListener('contextmenu', event => {
             event.preventDefault();
-            this.webSocketServer.send({ type: 'reload-weapon' });
         });
         document.addEventListener('wheel', event => {
             event.preventDefault();
@@ -80,7 +73,12 @@ export default class InGameActionHandler {
             this.fireTarget = { x: (event.clientX - rect.left) / this.board.scale, y: (event.clientY - rect.top) / this.board.scale };
         });
         document.addEventListener('mousedown', event => {
-            this.fireInterval = setInterval(fire, 50);
+            if (event.button == 0) {
+                fire();
+                this.fireInterval = setInterval(fire, 50);
+            } else if(event.button == 2){
+                this.webSocketServer.send({ type: 'reload-weapon' });
+            }
         });
         document.addEventListener('mouseup', event => {
             clearInterval(this.fireInterval);
