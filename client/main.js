@@ -23,7 +23,7 @@ getServerConfig().then(config => {
 
         settingsManager.onSave = (settings) => {
             actionHandler.registerListeners(settings.keyMapping);
-            webSocketServer.send(settings);
+            webSocketServer.send({ type: 'save-settings', value: settings });
         };
 
         setInterval(() => {
