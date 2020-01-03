@@ -56,7 +56,7 @@ export default class Board {
         this.scale = Math.min((window.innerHeight - 80) / data.height, (window.innerWidth - 80) / data.width);
         this._canvas.width = data.width * this.scale;
         this._canvas.height = data.height * this.scale;
-        this._context.scale(this.scale, this.scale);
+            this._context.scale(this.scale, this.scale);
         this.time = data.time;
         this.roundStartTimestamp = data.roundStartTimestamp;
         this.roundDuration = data.roundDuration;
@@ -77,10 +77,10 @@ export default class Board {
             return new Bullet(b);
         }));
 
-        this.walls = map.walls.map(w => {
+        this.walls = data.walls.map(w => {
             return new Rect(w.pos.x, w.pos.y, w.size.x, w.size.y);
         });
-        this.playerSpawns = map.playerSpawns.map(r => {
+        this.playerSpawns = data.playerSpawns.map(r => {
             return new Rect(r.pos.x, r.pos.y, r.size.x, r.size.y);
         });
     }
@@ -106,15 +106,13 @@ export default class Board {
         this.draw();
     }
     loadResources() {
-        const urls = [
+        const promises = [];
+        [
             '/img/map.png',
             '/img/machinegun.png',
             '/img/pistol.png',
             '/img/shotgun.png'
-        ];
-
-        const promises = [];
-        urls.forEach(url => {
+        ].forEach(url => {
             promises.push(loadImage(url).then((image) => this.ressources.set(url, image)));
         });
         return Promise.all(promises);
