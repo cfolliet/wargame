@@ -40,10 +40,10 @@ export default class Player extends Rect {
             });
         }
     }
-    draw(context) {
+    draw(context, camera) {
         context.fillStyle = this.color;
-        context.fillRect(this.left, this.top, this.size.x, this.size.y);
+        context.fillRect(this.left - camera.left, this.top - camera.top, this.size.x, this.size.y);
         context.strokeStyle = '#fff';
-        context.strokeRect(this.left, this.top, this.size.x, this.size.y);
+        context.strokeRect(this.left - camera.left, this.top - camera.top, this.size.x, this.size.y);
     }
 }

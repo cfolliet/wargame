@@ -24,6 +24,10 @@ export default class Board {
 
         this.currentHealth = 100;
 
+        this.camera = new Rect(0, 0, 500, 500);
+        this._canvas.width = 500;
+        this._canvas.height = 500;
+
         this.ping = 999;
         this.fps = 0;
         let lastTime = null;
@@ -54,9 +58,9 @@ export default class Board {
     }
     load(data) {
         this.scale = Math.min((window.innerHeight - 80) / data.height, (window.innerWidth - 80) / data.width);
-        this._canvas.width = data.width * this.scale;
-        this._canvas.height = data.height * this.scale;
-            this._context.scale(this.scale, this.scale);
+        //this._canvas.width = data.width * this.scale;
+        //this._canvas.height = data.height * this.scale;
+        //this._context.scale(this.scale, this.scale);
         this.time = data.time;
         this.roundStartTimestamp = data.roundStartTimestamp;
         this.roundDuration = data.roundDuration;
@@ -86,15 +90,22 @@ export default class Board {
     }
     draw() {
         this._context.font = "20px monospace";
+        this._context.fillStyle = '#000';
+        this._context.fillRect(0, 0, 500, 500);
         var image = this.spriteManager.get('/img/map.png');
-        this._context.drawImage(image, 0, 0);
+        this._context.drawImage(image, this.camera.left, this.camera.top, 500, 500, 0, 0, 500, 500);
 
-        this.players.forEach(player => player.draw(this._context));
-        this.zombies.forEach(zombie => zombie.draw(this._context, this.spriteManager));
-        this.bullets.forEach(bullet => bullet.draw(this._context));
+        this.players.forEach(player => player.draw(this._context, this.camera));
+        this.zombies.forEach(zombie => zombie.draw(this._context, this.camera, this.spriteManager));
+        this.bullets.forEach(bullet => bullet.draw(this._context, this.camera));
         drawHud(this);
     }
     update(dt) {
+        if (this.currentPlayer()) {
+            this.camera.pos.x = this.currentPlayer().pos.x// - this.camera.size.x / 2;
+            this.camera.pos.y = this.currentPlayer().pos.y// - this.camera.size.y / 2;
+        }
+
         this.players.forEach(player => {
             player.update(dt);
             player.collide(this, dt);
