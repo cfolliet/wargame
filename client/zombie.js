@@ -3,7 +3,8 @@ import Vec from './vec.js';
 
 export default class Zombie extends Rect {
     constructor(data) {
-        super();        
+        super();
+        this.angle = 90;
         Object.assign(this, data);
     }
     update(dt) {
@@ -46,8 +47,14 @@ export default class Zombie extends Rect {
     }
     draw(context, spriteManager) {
         const image = spriteManager.get('/img/zombie.png');
-        context.drawImage(image, this.left, this.top, this.size.x, this.size.y);
-        //context.fillStyle = this.color;
-        //context.fillRect(this.left, this.top, this.size.x, this.size.y);
+        if (this.vel.x > 0 || this.vel.y > 0) {
+            this.angle = Math.atan2(this.vel.y, this.vel.x);
+        }
+        context.fillStyle = this.color;
+        context.strokeRect(this.left, this.top, this.size.x, this.size.y);
+        context.translate(this.left + this.size.x / 2, this.top + this.size.y / 2);
+        context.rotate(this.angle);
+        context.drawImage(image, - (this.size.x / 2), - (this.size.y / 2), this.size.x, this.size.y);
+        context.setTransform(1, 0, 0, 1, 0, 0);
     }
 }
