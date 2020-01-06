@@ -48,8 +48,8 @@ export default class Zombie extends Rect {
     draw(context, camera, spriteManager) {
         const image = spriteManager.get('/img/zombie.png');
         this.angle = Math.atan2(this.vel.y, this.vel.x);
-        context.fillStyle = this.color;
-        context.strokeRect(this.left - camera.left, this.top - camera.top, this.size.x, this.size.y);
+        //context.fillStyle = this.color;
+        //context.strokeRect(this.left - camera.left, this.top - camera.top, this.size.x, this.size.y);
         context.translate(this.left - camera.left + this.size.x / 2, this.top - camera.top + this.size.y / 2);
         context.rotate(this.angle);
         context.drawImage(image, -this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y);

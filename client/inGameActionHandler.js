@@ -70,7 +70,8 @@ export default class InGameActionHandler {
         });
         document.addEventListener('mousemove', event => {
             const rect = canvas.getBoundingClientRect();
-            this.fireTarget = { x: (event.clientX - rect.left) / this.board.scale, y: (event.clientY - rect.top) / this.board.scale };
+            const camera = this.board.camera;
+            this.fireTarget = { x: (event.clientX - rect.left + camera.left) / this.board.scale, y: (event.clientY - rect.top + camera.top) / this.board.scale };
         });
         document.addEventListener('mousedown', event => {
             if (event.button == 0) {

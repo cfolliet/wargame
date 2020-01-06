@@ -24,9 +24,9 @@ export default class Board {
 
         this.currentHealth = 100;
 
-        this.camera = new Rect(0, 0, 500, 500);
-        this._canvas.width = 500;
-        this._canvas.height = 500;
+        this.camera = new Rect(0, 0, 800, 600);
+        this._canvas.width = this.camera.size.x;
+        this._canvas.height = this.camera.size.y;
 
         this.ping = 999;
         this.fps = 0;
@@ -91,9 +91,9 @@ export default class Board {
     draw() {
         this._context.font = "20px monospace";
         this._context.fillStyle = '#000';
-        this._context.fillRect(0, 0, 500, 500);
+        this._context.fillRect(0, 0, this.camera.size.x, this.camera.size.y);
         var image = this.spriteManager.get('/img/map.png');
-        this._context.drawImage(image, this.camera.left, this.camera.top, 500, 500, 0, 0, 500, 500);
+        this._context.drawImage(image, this.camera.left, this.camera.top, this.camera.size.x, this.camera.size.y, 0, 0, this.camera.size.x, this.camera.size.y);
 
         this.players.forEach(player => player.draw(this._context, this.camera));
         this.zombies.forEach(zombie => zombie.draw(this._context, this.camera, this.spriteManager));

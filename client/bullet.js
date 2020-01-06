@@ -41,8 +41,8 @@ export default class Bullet extends Rect {
             });
         }
     }
-    draw(context) {
+    draw(context, camera) {
         context.fillStyle = '#fff';
-        context.fillRect(this.left, this.top, this.size.x, this.size.y);
+        context.fillRect(this.left - camera.left, this.top - camera.top, this.size.x, this.size.y);
     }
 }
