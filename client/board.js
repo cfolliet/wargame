@@ -110,10 +110,10 @@ export default class Board {
             player.update(dt);
             player.collide(this, dt);
         });
-        this.bullets.forEach(bullet => {
-            bullet.update(dt);
-            bullet.collide(this)
-        });
+        //this.bullets.forEach(bullet => {
+        //    bullet.update(dt);
+        //   bullet.collide(this)
+        //});
         this.draw();
     }
 }

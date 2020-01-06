@@ -7,6 +7,7 @@ export default class Bullet extends Rect {
         Object.assign(this, data);
     }
     update(dt) {
+        throw new Exception('no usage')
         const vel = new Vec(this.vel.x, this.vel.y);
         if (vel.len) {
             vel.len = 2000;

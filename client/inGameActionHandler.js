@@ -69,9 +69,8 @@ export default class InGameActionHandler {
             this.webSocketServer.send({ type: 'change-weapon', value: nextWeaponIndex });
         });
         document.addEventListener('mousemove', event => {
-            const rect = canvas.getBoundingClientRect();
             const camera = this.board.camera;
-            this.fireTarget = { x: (event.clientX - rect.left + camera.left) / this.board.scale, y: (event.clientY - rect.top + camera.top) / this.board.scale };
+            this.fireTarget = { x: event.offsetX + camera.left, y: event.offsetY + camera.top };
         });
         document.addEventListener('mousedown', event => {
             if (event.button == 0) {
