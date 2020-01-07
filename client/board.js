@@ -57,10 +57,6 @@ export default class Board {
         this.currentPlayer().vel[axis] = direction;
     }
     load(data) {
-        this.scale = Math.min((window.innerHeight - 80) / data.height, (window.innerWidth - 80) / data.width);
-        //this._canvas.width = data.width * this.scale;
-        //this._canvas.height = data.height * this.scale;
-        //this._context.scale(this.scale, this.scale);
         this.time = data.time;
         this.roundStartTimestamp = data.roundStartTimestamp;
         this.roundDuration = data.roundDuration;
