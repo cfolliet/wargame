@@ -50,17 +50,19 @@ export default class SettingsManager {
         if (stringSettings) {
             this.settings = JSON.parse(stringSettings);
         }
+        if (this.settings) {
 
-        if (!this.settings.keyMapping) {
-            this.settings.keyMapping = [];
+            if (!this.settings.keyMapping) {
+                this.settings.keyMapping = [];
+            }
+
+            document.getElementById('name').value = this.settings.name,
+                document.querySelectorAll('.key').forEach(keySetting => {
+                    const action = keySetting.getAttribute('data-action');
+                    keySetting.innerHTML = String.fromCharCode(this.settings.keyMapping[action]);
+                    keySetting.value = this.settings.keyMapping[action];
+                });
         }
-
-        document.getElementById('name').value = this.settings.name,
-            document.querySelectorAll('.key').forEach(keySetting => {
-                const action = keySetting.getAttribute('data-action');
-                keySetting.innerHTML = String.fromCharCode(this.settings.keyMapping[action]);
-                keySetting.value = this.settings.keyMapping[action];
-            });
     }
     toggleDisplay() {
         const canvas = document.getElementById('canvas');
