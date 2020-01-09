@@ -60,13 +60,12 @@ function drawTime(board) {
 }
 
 function drawScore(board) {
+    board._context.font = 'bold 20px monospace';
+    board._context.textAlign = 'center';
     board._context.fillStyle = '#fff';
     [...board.players.values()].sort((a, b) => b.kills - a.kills).forEach((player, index) => {
-        board._context.fillStyle = player.color;
-        board._context.fillRect(board._canvas.width - 115, 32 + index * 20, 10, 10);
-        board._context.strokeStyle = '#fff';
-        board._context.strokeRect(board._canvas.width - 115, 32 + index * 20, 10, 10);
-        board._context.fillText(`${player.name}: ${player.kills}/${player.deaths}`, board._canvas.width - 100, 40 + index * 20, 100);
+        board._context.fillStyle = player.color;        
+        board._context.fillText(`${player.name}: ${player.kills}`, board._canvas.width / 2, 120 + index * 20);
     });
 }
 function drawplayerSpawns(board) {
