@@ -53,7 +53,7 @@ export default class SettingsManager {
         if (this.settings) {
 
             if (!this.settings.keyMapping) {
-                this.settings.keyMapping = [];
+                this.settings.keyMapping = this.getDefaultKeyMapping();
             }
 
             document.getElementById('name').value = this.settings.name,
@@ -62,7 +62,14 @@ export default class SettingsManager {
                     keySetting.innerHTML = String.fromCharCode(this.settings.keyMapping[action]);
                     keySetting.value = this.settings.keyMapping[action];
                 });
+        } else {
+            this.settings = {
+                keyMapping: this.getDefaultKeyMapping()
+            }
         }
+    }
+    getDefaultKeyMapping() {
+        return { top: "90", bottom: "83", left: "81", right: "68", reload: "82", nextweapon: "69" };
     }
     toggleDisplay() {
         const canvas = document.getElementById('canvas');

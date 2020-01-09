@@ -31,7 +31,7 @@ function drawWeapon(board) {
         board._context.drawImage(image, 100, board._canvas.height - 40, 30, 30);
 
         if (weapon.isReloading) {
-            board._context.fillText(`RELOADING`, 200, board._canvas.height - 20);
+            board._context.fillText(`RELOADING`, 250, board._canvas.height - 20);
             loadingPercentage = loadingDone * 100 / weapon.reloadDuration;
         } else {
             board._context.fillText(`${weapon.bulletCount}/${weapon.maxBulletCount}`, 200, board._canvas.height - 20);
@@ -87,7 +87,7 @@ export default function draw(board) {
     //drawWalls(board);
     //drawplayerSpawns(board);
     //drawInfos(board);
-    drawScore(board);
+    //drawScore(board);
     drawHealth(board);
     drawWeapon(board);
     drawTime(board);
