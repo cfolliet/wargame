@@ -48,9 +48,7 @@ export default class SettingsManager {
             localStorage.setItem('settings', JSON.stringify(this.settings));
 
             if (this.onSave) {
-                this.onSave({
-                    type: 'save-settings', value: { name: this.settings.name }
-                });
+                this.onSave(this.settings);
             }
             this.toggleDisplay();
         });

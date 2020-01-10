@@ -8,8 +8,8 @@ export default class InGameActionHandler {
         this.keysPressed = new Set;
     }
 
-    registerListeners(keyMapping) {
-        document.addEventListener("keydown", event => {
+    registerKeyboardListeners(keyMapping) {
+        const keydown = event => {
             if (this.keysPressed.has(event.keyCode)) {
                 return;
             }
@@ -34,9 +34,9 @@ export default class InGameActionHandler {
                 const nextWeaponIndex = (currentPlayer.currentWeaponIndex + 1) % currentPlayer.weapons.length;
                 this.webSocketServer.send({ type: 'change-weapon', value: nextWeaponIndex });
             }
-        });
+        }
 
-        document.addEventListener("keyup", event => {
+        const keyup = event => {
             this.keysPressed.delete(event.keyCode);
             if (keyMapping['left'] == event.keyCode) {
                 this.webSocketServer.send({ type: 'move-player', value: { axis: 'x', direction: 0 } });
@@ -51,16 +51,21 @@ export default class InGameActionHandler {
                 this.webSocketServer.send({ type: 'move-player', value: { axis: 'y', direction: 0 } });
                 this.board.movePlayer('y', 0);
             }
-        });
+        }
 
+        document.removeEventListener("keydown", keydown);
+        document.removeEventListener("keyup", keyup);
+        document.addEventListener("keydown", keydown);
+        document.addEventListener("keyup", keyup);
+    }
+
+    registerMouseListeners() {
         const fire = () => {
             //const bullet = this.board.createBullet(this.fireTarget);
             this.webSocketServer.send({ type: 'fire', value: this.fireTarget });
         }
 
-        document.addEventListener('contextmenu', event => {
-            event.preventDefault();
-        });
+        document.addEventListener('contextmenu', event => { event.preventDefault(); });
         document.addEventListener('wheel', event => {
             event.preventDefault();
             const currentPlayer = this.board.currentPlayer();

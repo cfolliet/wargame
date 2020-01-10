@@ -19,10 +19,11 @@ getServerConfig().then(config => {
 
     function onOpen() {
         const actionHandler = new InGameActionHandler(board, webSocketServer);
-        actionHandler.registerListeners(settingsManager.settings.keyMapping);
+        actionHandler.registerKeyboardListeners(settingsManager.settings.keyMapping);        
+        actionHandler.registerMouseListeners();
 
         settingsManager.onSave = (settings) => {
-            actionHandler.registerListeners(settings.keyMapping);
+            actionHandler.registerKeyboardListeners(settings.keyMapping);
             webSocketServer.send({ type: 'save-settings', value: settings });
         };
 
