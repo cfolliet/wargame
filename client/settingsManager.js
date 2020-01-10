@@ -4,6 +4,33 @@ export default class SettingsManager {
         this.load();
         this.bind();
     }
+    load() {
+        const savedSettings = localStorage.getItem('settings');
+        if (savedSettings) {
+            this.settings = JSON.parse(savedSettings);
+        } else {
+            this.settings = { name: '', keyMapping: {} };
+        }
+
+        // apply saved settings in view
+        document.getElementById('name').value = this.settings.name;
+        document.querySelectorAll('.key').forEach(keySetting => {
+            const action = keySetting.getAttribute('data-action');
+            const value = this.settings.keyMapping[action];
+            if (value) {
+                keySetting.innerHTML = String.fromCharCode(value);
+                keySetting.value = value;
+            }
+        });
+
+        // get all settings from the view and save them    
+        this.settings.name = document.getElementById('name').value;
+        const keySettings = document.querySelectorAll('.key');
+        keySettings.forEach(keySetting => {
+            this.settings.keyMapping[keySetting.getAttribute('data-action')] = keySetting.value;
+        })
+        localStorage.setItem('settings', JSON.stringify(this.settings));
+    }
     bind() {
         const settingsToggler = document.getElementById('settings-toggler');
         const keySettings = document.querySelectorAll('.key');
@@ -12,23 +39,18 @@ export default class SettingsManager {
         settingsToggler.addEventListener('click', this.toggleDisplay);
 
         saveSettings.addEventListener('click', () => {
-            const keyMapping = {};
+
+            this.settings.name = document.getElementById('name').value;
+            const keySettings = document.querySelectorAll('.key');
             keySettings.forEach(keySetting => {
-                keyMapping[keySetting.getAttribute('data-action')] = keySetting.value;
+                this.settings.keyMapping[keySetting.getAttribute('data-action')] = keySetting.value;
             })
+            localStorage.setItem('settings', JSON.stringify(this.settings));
 
-            const settings = {
-                type: 'save-settings',
-                value: {
-                    name: document.getElementById('name').value,
-                    keyMapping: keyMapping
-                }
-            }
-
-            localStorage.setItem('settings', JSON.stringify(settings.value));
-            this.settings = settings.value;
             if (this.onSave) {
-                this.onSave(this.settings);
+                this.onSave({
+                    type: 'save-settings', value: { name: this.settings.name }
+                });
             }
             this.toggleDisplay();
         });
@@ -44,32 +66,6 @@ export default class SettingsManager {
                 document.addEventListener('keyup', listenKey);
             });
         });
-    }
-    load() {
-        const stringSettings = localStorage.getItem('settings');
-        if (stringSettings) {
-            this.settings = JSON.parse(stringSettings);
-        }
-        if (this.settings) {
-
-            if (!this.settings.keyMapping) {
-                this.settings.keyMapping = this.getDefaultKeyMapping();
-            }
-
-            document.getElementById('name').value = this.settings.name,
-                document.querySelectorAll('.key').forEach(keySetting => {
-                    const action = keySetting.getAttribute('data-action');
-                    keySetting.innerHTML = String.fromCharCode(this.settings.keyMapping[action]);
-                    keySetting.value = this.settings.keyMapping[action];
-                });
-        } else {
-            this.settings = {
-                keyMapping: this.getDefaultKeyMapping()
-            }
-        }
-    }
-    getDefaultKeyMapping() {
-        return { top: "90", bottom: "83", left: "81", right: "68", reload: "82", nextweapon: "69" };
     }
     toggleDisplay() {
         const canvas = document.getElementById('canvas');
