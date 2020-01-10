@@ -18,8 +18,8 @@ export default class SettingsManager {
             const action = keySetting.getAttribute('data-action');
             const value = this.settings.keyMapping[action];
             if (value) {
-                keySetting.innerHTML = String.fromCharCode(value);
-                keySetting.value = value;
+                keySetting.innerHTML = value.key;
+                keySetting.value = value.code;
             }
         });
 
@@ -27,7 +27,7 @@ export default class SettingsManager {
         this.settings.name = document.getElementById('name').value;
         const keySettings = document.querySelectorAll('.key');
         keySettings.forEach(keySetting => {
-            this.settings.keyMapping[keySetting.getAttribute('data-action')] = keySetting.value;
+            this.settings.keyMapping[keySetting.getAttribute('data-action')] = { key: keySetting.innerHTML, code: keySetting.value };
         })
         localStorage.setItem('settings', JSON.stringify(this.settings));
     }
@@ -43,7 +43,7 @@ export default class SettingsManager {
             this.settings.name = document.getElementById('name').value;
             const keySettings = document.querySelectorAll('.key');
             keySettings.forEach(keySetting => {
-                this.settings.keyMapping[keySetting.getAttribute('data-action')] = keySetting.value;
+                this.settings.keyMapping[keySetting.getAttribute('data-action')] = { key: keySetting.innerHTML, code: keySetting.value };
             })
             localStorage.setItem('settings', JSON.stringify(this.settings));
 
@@ -58,7 +58,7 @@ export default class SettingsManager {
                 keySetting.innerHTML = '???';
                 const listenKey = event => {
                     keySetting.innerHTML = event.key;
-                    keySetting.value = event.keyCode;
+                    keySetting.value = event.code;
                     document.removeEventListener('keyup', listenKey);
                 }
                 document.addEventListener('keyup', listenKey);

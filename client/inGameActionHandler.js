@@ -10,26 +10,26 @@ export default class InGameActionHandler {
 
     registerKeyboardListeners(keyMapping) {
         const keydown = event => {
-            if (this.keysPressed.has(event.keyCode)) {
+            if (this.keysPressed.has(event.code)) {
                 return;
             }
 
-            this.keysPressed.add(event.keyCode);
-            if (keyMapping['left'] == event.keyCode) {
+            this.keysPressed.add(event.code);
+            if (keyMapping['left'].code == event.code) {
                 this.webSocketServer.send({ type: 'move-player', value: { axis: 'x', direction: -1 } });
                 this.board.movePlayer('x', -1);
-            } else if (keyMapping['top'] == event.keyCode) {
+            } else if (keyMapping['top'].code == event.code) {
                 this.webSocketServer.send({ type: 'move-player', value: { axis: 'y', direction: -1 } });
                 this.board.movePlayer('y', -1);
-            } else if (keyMapping['right'] == event.keyCode) {
+            } else if (keyMapping['right'].code == event.code) {
                 this.webSocketServer.send({ type: 'move-player', value: { axis: 'x', direction: 1 } });
                 this.board.movePlayer('x', 1);
-            } else if (keyMapping['bottom'] == event.keyCode) {
+            } else if (keyMapping['bottom'].code == event.code) {
                 this.webSocketServer.send({ type: 'move-player', value: { axis: 'y', direction: 1 } });
                 this.board.movePlayer('y', 1);
-            } else if (keyMapping['reload'] == event.keyCode) {
+            } else if (keyMapping['reload'].code == event.code) {
                 this.webSocketServer.send({ type: 'reload-weapon' });
-            } else if (keyMapping['nextweapon'] == event.keyCode) {
+            } else if (keyMapping['nextweapon'].code == event.code) {
                 const currentPlayer = this.board.currentPlayer();
                 const nextWeaponIndex = (currentPlayer.currentWeaponIndex + 1) % currentPlayer.weapons.length;
                 this.webSocketServer.send({ type: 'change-weapon', value: nextWeaponIndex });
@@ -37,17 +37,17 @@ export default class InGameActionHandler {
         }
 
         const keyup = event => {
-            this.keysPressed.delete(event.keyCode);
-            if (keyMapping['left'] == event.keyCode) {
+            this.keysPressed.delete(event.code);
+            if (keyMapping['left'].code == event.code) {
                 this.webSocketServer.send({ type: 'move-player', value: { axis: 'x', direction: 0 } });
                 this.board.movePlayer('x', 0);
-            } else if (keyMapping['top'] == event.keyCode) {
+            } else if (keyMapping['top'].code == event.code) {
                 this.webSocketServer.send({ type: 'move-player', value: { axis: 'y', direction: 0 } });
                 this.board.movePlayer('y', 0);
-            } else if (keyMapping['right'] == event.keyCode) {
+            } else if (keyMapping['right'].code == event.code) {
                 this.webSocketServer.send({ type: 'move-player', value: { axis: 'x', direction: 0 } });
                 this.board.movePlayer('x', 0);
-            } else if (keyMapping['bottom'] == event.keyCode) {
+            } else if (keyMapping['bottom'].code == event.code) {
                 this.webSocketServer.send({ type: 'move-player', value: { axis: 'y', direction: 0 } });
                 this.board.movePlayer('y', 0);
             }
