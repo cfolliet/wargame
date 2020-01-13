@@ -46,7 +46,7 @@ function drawWeapon(board) {
 function drawTime(board) {
     board._context.fillStyle = '#fff';
     
-    if (board.roundStartTimestamp) {
+    if (board.roundStartTimestamp <= board.time) {
         board._context.textAlign = 'right';
         const roundDuration = new Date(1000 * Math.round((board.time - board.roundStartTimestamp) / 1000)); // round to nearest second
         const text = 'Time: ' + roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0');
@@ -54,7 +54,7 @@ function drawTime(board) {
     } else {
         board._context.font = '30px monospace';
         board._context.textAlign = 'center';
-        const waitDuration = new Date(1000 * Math.round((board.roundStartTimestamp + board.roundDuration + board.roundResultDuration - board.time) / 1000)); // round to nearest second
+        const waitDuration = new Date(1000 * Math.round((board.roundStartTimestamp - board.time) / 1000)); // round to nearest second
         const text = 'NEXT ROUND IN ' + waitDuration.getUTCMinutes() + ':' + waitDuration.getUTCSeconds().toString().padStart(2, '0');
         board._context.fillText(text, board._canvas.width / 2, board._canvas.height / 2);
     }

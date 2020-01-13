@@ -99,7 +99,7 @@ class Board {
         });
     }
     isRoundOn() {
-        return [...this.players.values()].every(p => p.health > 0);
+        return this.roundStartTimestamp <= Date.now();
     }
     update(dt) {
         if (this.players.size) {
@@ -110,7 +110,7 @@ class Board {
                 bullet.collide(this)
             });
 
-            if (!this.isRoundOn()) {
+            if ([...this.players.values()].every(p => p.health <= 0)) {
                 this.reset();
             }
         }
@@ -128,7 +128,7 @@ class Board {
             player.weapons.forEach(weapon => weapon.reset());
         });
         this.bullets = new Set;
-        this.roundStartTimestamp = Date.now();
+        this.roundStartTimestamp = Date.now() + ROUND_RESULT_DURATION;
         this.roundResultDuration = ROUND_RESULT_DURATION;
         this.notifyChanges();
     }
