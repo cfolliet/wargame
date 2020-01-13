@@ -45,10 +45,11 @@ function drawWeapon(board) {
 
 function drawTime(board) {
     board._context.fillStyle = '#fff';
-    if (board.roundStartTimestamp + board.roundDuration > board.time) {
+    
+    if (board.roundStartTimestamp) {
         board._context.textAlign = 'right';
-        const roundDuration = new Date(1000 * Math.round((board.roundStartTimestamp + board.roundDuration - board.time) / 1000)); // round to nearest second
-        const text = 'Time left: ' + roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0');
+        const roundDuration = new Date(1000 * Math.round((board.time - board.roundStartTimestamp) / 1000)); // round to nearest second
+        const text = 'Time: ' + roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0');
         board._context.fillText(text, board._canvas.width, 20);
     } else {
         board._context.font = '30px monospace';

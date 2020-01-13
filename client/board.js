@@ -20,7 +20,6 @@ export default class Board {
         this.playerSpawns = [];
 
         this.roundStartTimestamp = null;
-        this.roundDuration = null;
 
         this.currentHealth = 100;
 
@@ -59,7 +58,6 @@ export default class Board {
     load(data) {
         this.time = data.time;
         this.roundStartTimestamp = data.roundStartTimestamp;
-        this.roundDuration = data.roundDuration;
         this.roundResultDuration = data.roundResultDuration;
         this.currentPlayerId = data.currentPlayerId;
 

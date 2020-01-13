@@ -2,7 +2,6 @@ const Player = require('./player.js');
 const Zombie = require('./zombie.js');
 const Rect = require('./rect.js');
 
-const ROUND_DURATION = 1000 * 60 * 2;
 const ROUND_RESULT_DURATION = 1000 * 10;
 
 function requestAnimationFrame(f) {
@@ -100,7 +99,7 @@ class Board {
         });
     }
     isRoundOn() {
-        return this.roundStartTimestamp + this.roundDuration > Date.now()
+        return [...this.players.values()].every(p => p.health > 0);
     }
     update(dt) {
         if (this.players.size) {
@@ -111,7 +110,7 @@ class Board {
                 bullet.collide(this)
             });
 
-            if (this.roundStartTimestamp + this.roundDuration + this.roundResultDuration <= Date.now()) {
+            if (!this.isRoundOn()) {
                 this.reset();
             }
         }
@@ -130,7 +129,6 @@ class Board {
         });
         this.bullets = new Set;
         this.roundStartTimestamp = Date.now();
-        this.roundDuration = ROUND_DURATION;
         this.roundResultDuration = ROUND_RESULT_DURATION;
         this.notifyChanges();
     }
@@ -144,7 +142,6 @@ class Board {
             width: this.width,
             height: this.height,
             roundStartTimestamp: this.roundStartTimestamp,
-            roundDuration: this.roundDuration,
             roundResultDuration: this.roundResultDuration,
             players: [...this.players.values()],
             zombies: [...this.zombies.values()],
