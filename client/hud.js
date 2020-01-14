@@ -61,13 +61,9 @@ function drawTime(board) {
 }
 
 function drawScore(board) {
-    board._context.font = 'bold 20px monospace';
-    board._context.textAlign = 'center';
+    //board._context.font = 'bold 20px monospace';
     board._context.fillStyle = '#fff';
-    [...board.players.values()].sort((a, b) => b.kills - a.kills).forEach((player, index) => {
-        board._context.fillStyle = player.color;        
-        board._context.fillText(`${player.name}: ${player.kills}`, board._canvas.width / 2, 120 + index * 20);
-    });
+    board._context.fillText(`score: ${board.score}`, board._canvas.width / 2, 120);
 }
 function drawplayerSpawns(board) {
     board.playerSpawns.forEach(respawn => {
@@ -87,7 +83,7 @@ export default function draw(board) {
     //drawWalls(board);
     //drawplayerSpawns(board);
     //drawInfos(board);
-    //drawScore(board);
+    drawScore(board);
     drawHealth(board);
     drawWeapon(board);
     drawTime(board);
