@@ -18,8 +18,8 @@ export default class Board {
         this.bullets = new Set;
         this.walls = [];
         this.playerSpawns = [];
-        this.lastScore = 0;
         this.score = 0;
+        this.duration = 0;
 
         this.roundStartTimestamp = null;
 
@@ -100,7 +100,10 @@ export default class Board {
         if (this.currentPlayer()) {
             this.camera.pos.x = this.currentPlayer().pos.x// - this.camera.size.x / 2;
             this.camera.pos.y = this.currentPlayer().pos.y// - this.camera.size.y / 2;
-            this.score = [...this.players.values()].reduce((acc, p) => acc + p.kills, 0);
+            if (this.roundStartTimestamp <= Date.now()) {
+                this.score = [...this.players.values()].reduce((acc, p) => acc + p.kills, 0);
+                this.duration = this.time - this.roundStartTimestamp;
+            }
         }
 
 

@@ -48,7 +48,7 @@ function drawTime(board) {
     
     if (board.roundStartTimestamp <= board.time) {
         board._context.textAlign = 'right';
-        const roundDuration = new Date(1000 * Math.round((board.time - board.roundStartTimestamp) / 1000)); // round to nearest second
+        const roundDuration = new Date(1000 * Math.round((board.duration) / 1000));
         const text = 'Time: ' + roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0');
         board._context.fillText(text, board._canvas.width, 20);
     } else {
@@ -63,7 +63,10 @@ function drawTime(board) {
 function drawScore(board) {
     //board._context.font = 'bold 20px monospace';
     board._context.fillStyle = '#fff';
-    board._context.fillText(`score: ${board.score}`, board._canvas.width / 2, 120);
+    const roundDuration = new Date(1000 * Math.round((board.duration) / 1000));
+    const textDuration = roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0');
+    board._context.fillText(`Time: ${textDuration}`, board._canvas.width / 2, 100);
+    board._context.fillText(`kills: ${board.score}`, board._canvas.width / 2, 120);
 }
 function drawplayerSpawns(board) {
     board.playerSpawns.forEach(respawn => {
