@@ -90,7 +90,7 @@ class Client {
     receive(message) {
         const data = JSON.parse(message);
 
-        if (data.type != 'ping') console.log('received', data);
+        //if (data.type != 'ping') console.log('received', data);
 
         if (data.type == 'fire') {
             this.board.fire(this.playerId, data.value);

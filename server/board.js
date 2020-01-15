@@ -34,16 +34,7 @@ class Board {
 
         this.onChange = null;
 
-        let lastTime = null;
-        this._frameCallback = (millis) => {
-            if (lastTime !== null) {
-                const diff = millis - lastTime;
-                this.update(diff / 1000);
-            }
-            lastTime = millis;
-            requestAnimationFrame(this._frameCallback);
-        };
-        requestAnimationFrame(this._frameCallback);
+        this.update();
     }
     createPlayer(name) {
         const player = new Player(createId(), this, name);
@@ -101,19 +92,28 @@ class Board {
     isRoundOn() {
         return this.roundStartTimestamp <= Date.now();
     }
-    update(dt) {
-        if (this.players.size) {
-            this.players.forEach(player => player.update(dt));
-            this.zombies.forEach(zombie => zombie.update(dt));
-            this.bullets.forEach(bullet => {
-                bullet.update(dt);
-                bullet.collide(this)
-            });
+    update() {
+        let lastTime = null;
+        this._frameCallback = (millis) => {
+            if (lastTime !== null) {
+                const diff = (millis - lastTime) / 1000;
+                if (this.players.size) {
+                    this.players.forEach(player => player.update(diff));
+                    this.zombies.forEach(zombie => zombie.update(diff));
+                    this.bullets.forEach(bullet => {
+                        bullet.update(diff);
+                        bullet.collide(this)
+                    });
 
-            if ([...this.players.values()].every(p => p.health <= 0)) {
-                this.reset();
+                    if ([...this.players.values()].every(p => p.health <= 0)) {
+                        this.reset();
+                    }
+                }
             }
-        }
+            lastTime = millis;
+            requestAnimationFrame(this._frameCallback);
+        };
+        requestAnimationFrame(this._frameCallback);
     }
     reset() {
         this.zombies.clear();
@@ -122,10 +122,9 @@ class Board {
         }
 
         this.players.forEach(player => {
-            player.health = 100;
             player.kills = 0;
             player.deaths = 0;
-            player.weapons.forEach(weapon => weapon.reset());
+            player.spawn();
         });
         this.bullets = new Set;
         this.roundStartTimestamp = Date.now() + ROUND_RESULT_DURATION;

@@ -13,7 +13,7 @@ class Player extends Rect {
         this.kills = 0;
         this.name = name;
         this.color = '#' + (Math.random() * 16777215 | 0).toString(16);
-        this.health = null;
+        this.health = 0;
         this.deaths = 0;
         this.weapons = [new Pistol(), new Machinegun(), new Shotgun()];
         this.currentWeaponIndex = 0;
