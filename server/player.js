@@ -23,8 +23,8 @@ class Player extends Rect {
     update(dt) {
         if (this.health <= 0) {
             this.deaths++;
-            this.pos.x = -100;
-            this.pos.y = -100;
+            this.pos.x = -1000;
+            this.pos.y = -1000;
         }
 
         let vel = new Vec(this.vel.x, this.vel.y);
@@ -89,8 +89,8 @@ class Player extends Rect {
         if (this.health <= 0) {
             bullet.player.kills++;
             this.deaths++;
-            this.pos.x = -100;
-            this.pos.y = -100;
+            this.pos.x = -1000;
+            this.pos.y = -1000;
         }
     }
     spawn() {

@@ -97,9 +97,16 @@ export default class Board {
         drawHud(this);
     }
     update(dt) {
-        if (this.currentPlayer()) {
-            this.camera.pos.x = this.currentPlayer().pos.x// - this.camera.size.x / 2;
-            this.camera.pos.y = this.currentPlayer().pos.y// - this.camera.size.y / 2;
+        const player = this.currentPlayer();
+        if (player) {
+            if (player.health > 0) {
+                this.camera.pos.x = player.pos.x;
+                this.camera.pos.y = player.pos.y;
+            } else {
+                this.camera.pos.x = this.camera.size.x / 2;
+                this.camera.pos.y = this.camera.size.y / 2;
+            }
+
             if (this.roundStartTimestamp <= Date.now()) {
                 this.score = [...this.players.values()].reduce((acc, p) => acc + p.kills, 0);
                 this.duration = this.time - this.roundStartTimestamp;

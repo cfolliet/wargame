@@ -16,6 +16,13 @@ function drawHealth(board) {
         } else {
             board.currentHealth = board.currentPlayer().health;
         }
+
+        if (board.currentPlayer().health <= 0) {
+            board._context.font = '30px monospace';
+            board._context.textAlign = 'center';
+            const text = 'Your are dead \u2620';
+            board._context.fillText(text, board._canvas.width / 2, board._canvas.height / 2);
+        }
     }
 }
 
