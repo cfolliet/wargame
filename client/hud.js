@@ -45,12 +45,13 @@ function drawWeapon(board) {
 
 function drawTime(board) {
     board._context.fillStyle = '#fff';
-    
+
     if (board.roundStartTimestamp <= board.time) {
         board._context.textAlign = 'right';
         const roundDuration = new Date(1000 * Math.round((board.duration) / 1000));
         const text = 'Time: ' + roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0');
         board._context.fillText(text, board._canvas.width, 20);
+        board._context.fillText(`kills: ${board.score}`, board._canvas.width, 40);
     } else {
         board._context.font = '30px monospace';
         board._context.textAlign = 'center';
@@ -61,12 +62,15 @@ function drawTime(board) {
 }
 
 function drawScore(board) {
-    //board._context.font = 'bold 20px monospace';
-    board._context.fillStyle = '#fff';
-    const roundDuration = new Date(1000 * Math.round((board.duration) / 1000));
-    const textDuration = roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0');
-    board._context.fillText(`Time: ${textDuration}`, board._canvas.width / 2, 100);
-    board._context.fillText(`kills: ${board.score}`, board._canvas.width / 2, 120);
+    if (board.roundStartTimestamp > board.time) {
+        //board._context.font = 'bold 20px monospace';
+        board._context.fillStyle = '#fff';
+        const roundDuration = new Date(1000 * Math.round((board.duration) / 1000));
+        const textDuration = roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0');
+        board._context.fillText('Last round', board._canvas.width / 2, 100);
+        board._context.fillText(`Time: ${textDuration}`, board._canvas.width / 2, 120);
+        board._context.fillText(`kills: ${board.score}`, board._canvas.width / 2, 140);
+    }
 }
 function drawplayerSpawns(board) {
     board.playerSpawns.forEach(respawn => {
