@@ -7,11 +7,12 @@ function drawInfos(board) {
 function drawHealth(board) {
     if (board.currentPlayer()) {
         board._context.fillStyle = '#fff';
-        board._context.fillText('\u2764 ' + board.currentPlayer().health, 80, board._canvas.height - 20);
+        board._context.textAlign = 'left';
+        board._context.fillText('\u2764 ' + board.currentPlayer().health, 20, board._canvas.height / board.scale - 20);
 
         if (board.currentHealth > board.currentPlayer().health) {
             board._context.fillStyle = 'red';
-            board._context.fillRect(0, 0, board._canvas.width, board._canvas.height);
+            board._context.fillRect(0, 0, board._canvas.width / board.scale, board._canvas.height / board.scale);
             setTimeout(() => board.currentHealth = board.currentPlayer().health, 68);
         } else {
             board.currentHealth = board.currentPlayer().health;
@@ -21,7 +22,7 @@ function drawHealth(board) {
             board._context.font = '30px monospace';
             board._context.textAlign = 'center';
             const text = 'Your are dead \u2620';
-            board._context.fillText(text, board._canvas.width / 2, board._canvas.height / 2);
+            board._context.fillText(text, board._canvas.width / board.scale / 2, board._canvas.height / board.scale / 2);
         }
     }
 }
@@ -29,24 +30,25 @@ function drawHealth(board) {
 function drawWeapon(board) {
     if (board.currentPlayer()) {
         board._context.fillStyle = '#fff';
+        board._context.textAlign = 'left';
         const player = board.currentPlayer();
         const weapon = player.weapons[player.currentWeaponIndex];
         var image = board.spriteManager.get('/img/' + weapon.name + '.png');
         const loadingDone = board.time - weapon.loadTimestamp;
         let loadingPercentage = 0;
 
-        board._context.drawImage(image, 100, board._canvas.height - 40, 30, 30);
+        board._context.drawImage(image, 100, board._canvas.height / board.scale - 40, 30, 30);
 
         if (weapon.isReloading) {
-            board._context.fillText(`RELOADING`, 250, board._canvas.height - 20);
+            board._context.fillText(`RELOADING`, 140, board._canvas.height / board.scale - 20);
             loadingPercentage = loadingDone * 100 / weapon.reloadDuration;
         } else {
-            board._context.fillText(`${weapon.bulletCount}/${weapon.maxBulletCount}`, 200, board._canvas.height - 20);
+            board._context.fillText(`${weapon.bulletCount}/${weapon.maxBulletCount}`, 140, board._canvas.height / board.scale - 20);
             loadingPercentage = loadingDone * 100 / weapon.loadDuration;
         }
 
         let width = Math.max(0, 100 - loadingPercentage);
-        board._context.fillRect(140, board._canvas.height - 15, width, 5);
+        board._context.fillRect(140, board._canvas.height / board.scale - 15, width, 5);
     }
 }
 
@@ -56,27 +58,27 @@ function drawTime(board) {
     if (board.roundStartTimestamp <= board.time) {
         board._context.textAlign = 'right';
         const roundDuration = new Date(1000 * Math.round((board.duration) / 1000));
-        const text = 'Time: ' + roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0');
-        board._context.fillText(text, board._canvas.width, 20);
-        board._context.fillText(`kills: ${board.score}`, board._canvas.width, 40);
+        const text = 'Time: ' + roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0') + ' ';
+        board._context.fillText(text, board._canvas.width / board.scale, 20);
+        board._context.fillText(`kills: ${board.score} `, board._canvas.width / board.scale, 40);
     } else {
         board._context.font = '30px monospace';
         board._context.textAlign = 'center';
         const waitDuration = new Date(1000 * Math.round((board.roundStartTimestamp - board.time) / 1000)); // round to nearest second
         const text = 'NEXT ROUND IN ' + waitDuration.getUTCMinutes() + ':' + waitDuration.getUTCSeconds().toString().padStart(2, '0');
-        board._context.fillText(text, board._canvas.width / 2, board._canvas.height / 2);
+        board._context.fillText(text, board._canvas.width / board.scale / 2, board._canvas.height / board.scale / 2);
     }
 }
 
 function drawScore(board) {
     if (board.roundStartTimestamp > board.time) {
-        //board._context.font = 'bold 20px monospace';
         board._context.fillStyle = '#fff';
+        board._context.textAlign = 'center';
         const roundDuration = new Date(1000 * Math.round((board.duration) / 1000));
         const textDuration = roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0');
-        board._context.fillText('Last round', board._canvas.width / 2, 100);
-        board._context.fillText(`Time: ${textDuration}`, board._canvas.width / 2, 120);
-        board._context.fillText(`kills: ${board.score}`, board._canvas.width / 2, 140);
+        board._context.fillText('Last round', board._canvas.width / 2 / board.scale, 100);
+        board._context.fillText(`Time: ${textDuration}`, board._canvas.width / 2 / board.scale, 120);
+        board._context.fillText(`kills: ${board.score}`, board._canvas.width / 2 / board.scale, 140);
     }
 }
 function drawplayerSpawns(board) {

@@ -26,8 +26,6 @@ export default class Board {
         this.currentHealth = 100;
 
         this.camera = new Rect(0, 0, 800, 600);
-        this._canvas.width = this.camera.size.x;
-        this._canvas.height = this.camera.size.y;
 
         this.ping = 999;
         this.fps = 0;
@@ -58,6 +56,8 @@ export default class Board {
         this.currentPlayer().vel[axis] = direction;
     }
     load(data) {
+        this.height = data.height;
+        this.width = data.width;
         this.time = data.time;
         this.roundStartTimestamp = data.roundStartTimestamp;
         this.roundResultDuration = data.roundResultDuration;
@@ -85,6 +85,11 @@ export default class Board {
         });
     }
     draw() {
+        this.scale = Math.min((window.innerHeight - 80) / this.height, (window.innerWidth - 80) / this.width);
+        this._canvas.width = this.camera.size.x * this.scale;
+        this._canvas.height = this.camera.size.y * this.scale;
+        this._context.scale(this.scale, this.scale);
+
         this._context.font = "20px monospace";
         this._context.fillStyle = '#000';
         this._context.fillRect(0, 0, this.camera.size.x, this.camera.size.y);

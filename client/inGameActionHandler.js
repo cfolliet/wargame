@@ -75,7 +75,7 @@ export default class InGameActionHandler {
         });
         document.addEventListener('mousemove', event => {
             const camera = this.board.camera;
-            this.fireTarget = { x: event.offsetX + camera.left, y: event.offsetY + camera.top };
+            this.fireTarget = { x: event.offsetX / this.board.scale + camera.left, y: event.offsetY / this.board.scale + camera.top };
         });
         document.addEventListener('mousedown', event => {
             if (event.button == 0) {
