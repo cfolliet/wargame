@@ -17,6 +17,7 @@ class Player extends Rect {
         this.deaths = 0;
         this.weapons = [new Pistol(), new Machinegun(), new Shotgun()];
         this.currentWeaponIndex = 0;
+        this.headingPosition = null;
 
         this.spawn();
     }
@@ -75,6 +76,7 @@ class Player extends Rect {
     }
     fire(target) {
         const vel = new Vec(target.x - this.pos.x, target.y - this.pos.y);
+        this.headingPosition = { x: vel.x, y: vel.y };
         return this.weapons[this.currentWeaponIndex].fire(this, vel);
     }
     reload() {

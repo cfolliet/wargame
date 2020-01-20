@@ -46,7 +46,21 @@ export default class Player extends Rect {
         context.stroke();
 
         const image = spriteManager.get('/img/player.png');
-        this.angle = board.mousePosition ? Math.atan2(board.mousePosition.y - this.pos.y, board.mousePosition.x - this.pos.x) : 0;
+        let headingX = 0;
+        let headingY = 0;
+
+        if (this.headingPosition) {
+            headingX = this.headingPosition.x;
+            headingY = this.headingPosition.y;
+        }
+
+        if (board.mousePosition && this.id == board.currentPlayerId) {
+            headingX = board.mousePosition.x - this.pos.x;
+            headingY = board.mousePosition.y - this.pos.y;
+        }
+
+        this.angle = Math.atan2(headingY, headingX);
+
         const sizeX = this.size.x + 10;
         const sizeY = this.size.y + 10;
         const left = this.left - 5;
