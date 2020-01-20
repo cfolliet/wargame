@@ -41,6 +41,10 @@ export default class Player extends Rect {
         }
     }
     draw(context, camera, spriteManager, board) {
+        context.strokeStyle = this.color;
+        context.arc(this.pos.x - camera.left, this.pos.y - camera.top, 10, 0, 2 * Math.PI);
+        context.stroke();
+
         const image = spriteManager.get('/img/player.png');
         this.angle = board.mousePosition ? Math.atan2(board.mousePosition.y - this.pos.y, board.mousePosition.x - this.pos.x) : 0;
         const sizeX = this.size.x + 10;
@@ -52,10 +56,5 @@ export default class Player extends Rect {
         context.drawImage(image, -sizeX / 2, -sizeY / 2, sizeX, sizeY);
         context.rotate(-this.angle);
         context.translate(-(left - camera.left + sizeX / 2), -(top - camera.top + sizeY / 2));
-
-        //context.fillStyle = this.color;
-        //context.fillRect(this.left - camera.left, this.top - camera.top, this.size.x, this.size.y);
-        //context.strokeStyle = '#fff';
-        //context.strokeRect(this.left - camera.left, this.top - camera.top, this.size.x, this.size.y);
     }
 }
