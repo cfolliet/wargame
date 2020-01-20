@@ -40,10 +40,22 @@ export default class Player extends Rect {
             });
         }
     }
-    draw(context, camera) {
-        context.fillStyle = this.color;
-        context.fillRect(this.left - camera.left, this.top - camera.top, this.size.x, this.size.y);
-        context.strokeStyle = '#fff';
-        context.strokeRect(this.left - camera.left, this.top - camera.top, this.size.x, this.size.y);
+    draw(context, camera, spriteManager, board) {
+        const image = spriteManager.get('/img/player.png');
+        this.angle = board.mousePosition ? Math.atan2(board.mousePosition.y - this.pos.y, board.mousePosition.x - this.pos.x) : 0;
+        const sizeX = this.size.x + 10;
+        const sizeY = this.size.y + 10;
+        const left = this.left - 5;
+        const top = this.top - 5;
+        context.translate(left - camera.left + sizeX / 2, top - camera.top + sizeY / 2);
+        context.rotate(this.angle);
+        context.drawImage(image, -sizeX / 2, -sizeY / 2, sizeX, sizeY);
+        context.rotate(-this.angle);
+        context.translate(-(left - camera.left + sizeX / 2), -(top - camera.top + sizeY / 2));
+
+        //context.fillStyle = this.color;
+        //context.fillRect(this.left - camera.left, this.top - camera.top, this.size.x, this.size.y);
+        //context.strokeStyle = '#fff';
+        //context.strokeRect(this.left - camera.left, this.top - camera.top, this.size.x, this.size.y);
     }
 }

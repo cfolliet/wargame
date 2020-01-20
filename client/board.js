@@ -13,6 +13,7 @@ export default class Board {
         this.spriteManager = new SpriteManager();
 
         this.currentPlayerId = null;
+        this.mousePosition = null;
         this.players = new Map;
         this.zombies = new Map;
         this.bullets = new Set;
@@ -96,7 +97,7 @@ export default class Board {
         var image = this.spriteManager.get('/img/map.png');
         this._context.drawImage(image, this.camera.left, this.camera.top, this.camera.size.x, this.camera.size.y, 0, 0, this.camera.size.x, this.camera.size.y);
 
-        this.players.forEach(player => player.draw(this._context, this.camera));
+        this.players.forEach(player => player.draw(this._context, this.camera, this.spriteManager, this));
         this.zombies.forEach(zombie => zombie.draw(this._context, this.camera, this.spriteManager));
         this.bullets.forEach(bullet => bullet.draw(this._context, this.camera));
         drawHud(this);

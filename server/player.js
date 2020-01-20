@@ -6,7 +6,7 @@ const Shotgun = require('./shotgun.js');
 
 class Player extends Rect {
     constructor(id, board, name = '') {
-        super(0, 0, 10, 10);
+        super(0, 0, 15, 15);
         this.board = board;
         this.id = id;
         this.vel = new Vec;

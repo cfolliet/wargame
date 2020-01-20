@@ -4,7 +4,6 @@ export default class InGameActionHandler {
         this.webSocketServer = webSocketServer;
 
         this.fireInterval = null;
-        this.fireTarget = null;
         this.keysPressed = new Set;
     }
 
@@ -61,8 +60,8 @@ export default class InGameActionHandler {
 
     registerMouseListeners() {
         const fire = () => {
-            //const bullet = this.board.createBullet(this.fireTarget);
-            this.webSocketServer.send({ type: 'fire', value: this.fireTarget });
+            //const bullet = this.board.createBullet(this.board.mousePosition);
+            this.webSocketServer.send({ type: 'fire', value: this.board.mousePosition });
         }
 
         document.addEventListener('contextmenu', event => { event.preventDefault(); });
@@ -75,7 +74,7 @@ export default class InGameActionHandler {
         });
         document.addEventListener('mousemove', event => {
             const camera = this.board.camera;
-            this.fireTarget = { x: event.offsetX / this.board.scale + camera.left, y: event.offsetY / this.board.scale + camera.top };
+            this.board.mousePosition = { x: event.offsetX / this.board.scale + camera.left, y: event.offsetY / this.board.scale + camera.top };
         });
         document.addEventListener('mousedown', event => {
             if (event.button == 0) {
