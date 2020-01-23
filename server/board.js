@@ -1,6 +1,7 @@
 const Player = require('./player.js');
 const Zombie = require('./zombie.js');
 const Rect = require('./rect.js');
+const fs = require('fs');
 
 const ROUND_RESULT_DURATION = 1000 * 10;
 
@@ -106,6 +107,14 @@ class Board {
                     });
 
                     if ([...this.players.values()].every(p => p.health <= 0)) {
+                        const players = [...this.players.values()];
+                        const roundDuration = new Date(1000 * Math.round((Date.now() - this.roundStartTimestamp) / 1000));
+                        const durationText = roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0');
+                        const text = '\r\n' + durationText + ' | ' + players.reduce((acc, p) => acc + p.kills, 0) + ' | ' + players.map(p => p.name).join(',');
+                        fs.appendFile('score.txt', text, (err) => {
+                            if (err) throw err;
+                            console.log('Score saved into file!');
+                          });
                         this.reset();
                     }
                 }
