@@ -41,6 +41,7 @@ export default class Player extends Rect {
         }
     }
     draw(context, camera, spriteManager, board) {
+        context.beginPath();
         context.strokeStyle = this.color;
         context.arc(this.pos.x - camera.left, this.pos.y - camera.top, 10, 0, 2 * Math.PI);
         context.stroke();
