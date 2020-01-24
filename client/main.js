@@ -13,9 +13,17 @@ async function getServerConfig() {
     return config;
 }
 
-getServerConfig().then(config => {
+async function getScores() {
+    const response = await fetch('/scores');
+    const scores = await response.json();
+    return scores;
+}
+
+Promise.all([getServerConfig(), getScores()]).then(([config, scores]) => {
     const webSocketServerIp = `ws://${config.webSocketServerIp}:9000`;
     const webSocketServer = new WebSocketManager(webSocketServerIp, onOpen, onReceive);
+
+    board.highscores = scores;
 
     function onOpen() {
         const actionHandler = new InGameActionHandler(board, webSocketServer);

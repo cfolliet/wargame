@@ -74,11 +74,18 @@ function drawScore(board) {
     if (board.roundStartTimestamp > board.time) {
         board._context.fillStyle = '#fff';
         board._context.textAlign = 'center';
-        const roundDuration = new Date(1000 * Math.round((board.duration) / 1000));
-        const textDuration = roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0');
+        let roundDuration = new Date(1000 * Math.round((board.duration) / 1000));
+        let textDuration = roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0');
         board._context.fillText('Last round', board._canvas.width / 2 / board.scale, 100);
         board._context.fillText(`Time: ${textDuration}`, board._canvas.width / 2 / board.scale, 120);
         board._context.fillText(`kills: ${board.score}`, board._canvas.width / 2 / board.scale, 140);
+
+        let hightscore = board.highscores[0];
+        roundDuration = new Date(1000 * Math.round((hightscore.time) / 1000));
+        textDuration = roundDuration.getUTCMinutes() + ':' + roundDuration.getUTCSeconds().toString().padStart(2, '0');
+        board._context.fillText(`Best Time: ${textDuration} ${hightscore.players}`, board._canvas.width / 2 / board.scale, 440);
+        hightscore = board.highscores[1];
+        board._context.fillText(`Best kills: ${hightscore.score} ${hightscore.players}`, board._canvas.width / 2 / board.scale, 460);
     }
 }
 function drawplayerSpawns(board) {

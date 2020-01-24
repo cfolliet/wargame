@@ -1,0 +1,8 @@
+﻿15|3| player1
+1|45| Clément
+30|4| Clément
+72244|59|player1
+9735|0|player1
+109456|76|player1
+113091|77|Clément
+92249|57|Clément
