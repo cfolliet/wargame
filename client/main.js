@@ -34,6 +34,7 @@ Promise.all([getServerConfig(), getScores()]).then(([config, scores]) => {
             actionHandler.registerKeyboardListeners(settings.keyMapping);
             webSocketServer.send({ type: 'save-settings', value: settings });
         };
+        webSocketServer.send({ type: 'save-settings', value: settingsManager.settings });
 
         setInterval(() => {
             webSocketServer.send({ type: 'ping', value: performance.now() });
