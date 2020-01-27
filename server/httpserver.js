@@ -33,7 +33,7 @@ function start() {
                 return { time: data[0], score: data[1], players: data[2] };
             });
             const bests = [];
-            bests.push(scores.sort((s1, s2) => s2.time - s1.time).reverse()[0]);
+            bests.push(scores.sort((s1, s2) => s2.time - s1.time)[0]);
             bests.push(scores.sort((s1, s2) => s2.score - s1.score)[0]);
             res.write(JSON.stringify(bests));
             res.end();
