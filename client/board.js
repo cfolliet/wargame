@@ -63,6 +63,7 @@ export default class Board {
         this.roundStartTimestamp = data.roundStartTimestamp;
         this.roundResultDuration = data.roundResultDuration;
         this.currentPlayerId = data.currentPlayerId;
+        this.highscores = data.highscores;
 
         this.players = new Map(data.players.map(p => {
             const player = new Player(p);

@@ -29,8 +29,10 @@ class Board {
         this.playerSpawns = [];
         this.zombieSpawns = [];
 
-        this.setMap(map);
+        this.highscores = null;
 
+        this.loadScores();
+        this.setMap(map);
         this.reset();
 
         this.onChange = null;
@@ -110,10 +112,12 @@ class Board {
                         const players = [...this.players.values()];
                         const roundDuration = Date.now() - this.roundStartTimestamp;
                         const text = '\r\n' + roundDuration + '|' + players.reduce((acc, p) => acc + p.kills, 0) + '|' + players.map(p => p.name).join(',');
+                        this.scores += text;
                         fs.appendFile('scores.txt', text, (err) => {
                             if (err) throw err;
                             console.log('Score saved into file!');
-                          });
+                        });
+                        this.refreshHighscores();
                         this.reset();
                     }
                 }
@@ -139,6 +143,20 @@ class Board {
         this.roundResultDuration = ROUND_RESULT_DURATION;
         this.notifyChanges();
     }
+    loadScores() {
+        this.scores = fs.readFileSync('scores.txt').toString('utf8');
+    }
+    refreshHighscores() {
+        const content = this.scores;
+        const scores = content.split('\r\n').map(row => {
+            const data = row.split('|');
+            return { time: data[0], score: data[1], players: data[2] };
+        });
+        const bests = [];
+        bests.push(scores.sort((s1, s2) => s2.time - s1.time)[0]);
+        bests.push(scores.sort((s1, s2) => s2.score - s1.score)[0]);
+        this.highscores = bests;
+    }
     notifyChanges() {
         if (this.onChange) {
             this.onChange();
@@ -154,7 +172,8 @@ class Board {
             zombies: [...this.zombies.values()],
             bullets: [...this.bullets],
             walls: this.walls,
-            playerSpawns: this.playerSpawns
+            playerSpawns: this.playerSpawns,
+            highscores: this.highscores
         };
     }
 }

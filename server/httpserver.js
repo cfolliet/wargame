@@ -25,18 +25,6 @@ function start() {
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.write(JSON.stringify({ webSocketServerIp: getLocalExternalIP() }));
             res.end();
-        } else if (req.url === '/scores') {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            const content = fs.readFileSync('scores.txt').toString('utf8');
-            const scores = content.split('\r\n').map(row => {
-                const data = row.split('|');
-                return { time: data[0], score: data[1], players: data[2] };
-            });
-            const bests = [];
-            bests.push(scores.sort((s1, s2) => s2.time - s1.time)[0]);
-            bests.push(scores.sort((s1, s2) => s2.score - s1.score)[0]);
-            res.write(JSON.stringify(bests));
-            res.end();
         } else {
             let indexPath = path.join(CLIENT_DIR, 'index.html');
             fs.readFile(indexPath, function (error, html) {
