@@ -59,5 +59,12 @@ export default class Zombie extends Rect {
         context.drawImage(image, -sizeX / 2, -sizeY / 2, sizeX, sizeY);
         context.rotate(-this.angle);
         context.translate(-(left - camera.left + sizeX / 2), -(top - camera.top + sizeY / 2));
+
+        const nbpixels = sizeX * sizeY;
+        const bloodPixels = nbpixels * ((100 - this.health) / 100) / 6;
+        context.fillStyle = 'red';
+        for (let i = 0; i < bloodPixels; i++) {
+            context.fillRect(this.left - camera.left + Math.random() * sizeX, this.top - camera.top + Math.random() * sizeY, 1, 1);
+        }
     }
 }
