@@ -6,4 +6,4 @@ A multi-players top-down shooter in javascript with almost vanilla JS.
 
 * Clone repository.
 * Run `npm install`.
-* Run `node .\server\main.js`.
+* Run `npm start`.

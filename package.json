@@ -1,0 +1,22 @@
+{
+  "name": "wargame",
+  "version": "1.0.0",
+  "description": "A multi-players top-down shooter in javascript with almost vanilla JS.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node .\\server\\main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cfolliet/wargame.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cfolliet/wargame/issues"
+  },
+  "homepage": "https://github.com/cfolliet/wargame#readme",
+  "dependencies": {
+    "ws": "^7.2.1"
+  }
+}
